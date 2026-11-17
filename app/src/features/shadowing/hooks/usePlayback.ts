@@ -1,9 +1,7 @@
 import { useCallback, useState } from 'react';
+import { errorMessage } from '@/shared/utils';
 import { NORMAL_RATE } from '../model/constants';
 import { useShadowingDependencies } from '../dependencies/ShadowingDependencies';
-
-const messageOf = (error: unknown): string =>
-  error instanceof Error ? error.message : String(error);
 
 /** Model audio (TTS), single words, and "model → me" back-to-back playback. */
 export function usePlayback() {
@@ -17,7 +15,7 @@ export function usePlayback() {
     try {
       await task();
     } catch (e) {
-      setError(messageOf(e));
+      setError(errorMessage(e));
     } finally {
       setIsPlaying(false);
     }

@@ -9,6 +9,16 @@ export const TermSchema = z.object({
   example: z.string().min(1).nullable(),
 });
 
+export const ReviewStateSchema = z.object({
+  deckId: z.string().min(1),
+  term: z.string().min(1),
+  ease: z.number().min(1.3),
+  interval: z.number().int().nonnegative(),
+  repetitions: z.number().int().nonnegative(),
+  dueAt: z.string().min(1),
+  lapses: z.number().int().nonnegative(),
+});
+
 export const DeckSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),

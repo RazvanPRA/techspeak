@@ -1,26 +1,30 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useHoldToRecord, useMicPermission, useSpeechModel } from '@/services/speech';
+import { useShadowingDependencies } from '../dependencies/ShadowingDependencies';
 import { NORMAL_RATE, SLOW_RATE, WORD_RATE } from '../model/constants';
 import { sentenceAdvanced } from '../state/slice';
 import { useShadowingDispatch } from '../state/hooks';
 import { useAssessAttempt } from './useAssessAttempt';
 import { useAttemptView } from './useAttemptView';
 import { useCurrentSentence } from './useCurrentSentence';
-import { useMicPermission } from './useMicPermission';
 import { usePlayback } from './usePlayback';
-import { useRecordAttempt } from './useRecordAttempt';
-import { useSpeechModel } from './useSpeechModel';
 
 /** Wires the shadowing screen: sentence, playback, recording, result and word details. */
 export function useShadowingScreen() {
+  const { recorder, recognizer } = useShadowingDependencies();
   const dispatch = useShadowingDispatch();
   const current = useCurrentSentence();
   const view = useAttemptView(current.tokens.length);
-  const model = useSpeechModel();
-  const { request } = useMicPermission();
+  const model = useSpeechModel(recognizer);
+  const { isPermitted } = useMicPermission(recorder);
   const playback = usePlayback();
   const assess = useAssessAttempt(current.tokens, current.hints);
-  const isPermitted = useCallback(async () => (await request()) === 'granted', [request]);
-  const record = useRecordAttempt({ isPermitted, onRecorded: assess, beforeRecord: playback.stop });
+  const record = useHoldToRecord({
+    recorder,
+    isPermitted,
+    onRecorded: assess,
+    beforeRecord: playback.stop,
+  });
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   // usePlayback catches its own errors, so these promises never reject.

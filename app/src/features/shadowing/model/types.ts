@@ -23,5 +23,3 @@ export type AttemptRecord = AttemptResult & {
   createdAt: string;
 };
 
-export type RecordPhase = 'idle' | 'recording' | 'assessing';
-export type ModelStatus = 'loading' | 'ready' | 'error';

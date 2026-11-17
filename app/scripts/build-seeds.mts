@@ -1,4 +1,4 @@
-// Generates src/content/decks/*.json and src/content/prompts.json from .claude/VOCABULARY.md.
+// Generates src/content/decks/*.json, prompts.json and minimal-pairs.json from .claude/VOCABULARY.md.
 // Run with `yarn build:seeds` (Node >= 22.18 strips TypeScript types natively).
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -93,6 +93,24 @@ function parsePrompts(lines: string[]): SeedPromptGroup[] {
   });
 }
 
+type SeedPairWord = { word: string; ipa: string };
+type SeedPair = { id: string; sound: string; a: SeedPairWord; b: SeedPairWord; tip: string | null };
+
+function parsePairs(lines: string[]): SeedPair[] {
+  const start = lines.findIndex(l => l.startsWith('## Minimal pairs'));
+  if (start < 0) return [];
+  const end = lines.findIndex((l, i) => i > start && (l.startsWith('## ') || l === '---'));
+  const rows = lines.slice(start + 1, end < 0 ? undefined : end).filter(l => l.startsWith('|'));
+  const tips = new Map<string, string>(); // a row without a tip reuses its sound's tip
+  return rows.slice(2).map(row => {
+    const [sound, a, ipaA, b, ipaB, tip] = row.split('|').slice(1, -1).map(clean);
+    if (!sound || !a || !ipaA || !b || !ipaB) throw new Error(`Bad minimal pair row: ${row}`);
+    if (tip) tips.set(sound, tip);
+    const pairTip = tip ?? tips.get(sound) ?? null;
+    return { id: `${a}-${b}`, sound, a: { word: a, ipa: ipaA }, b: { word: b, ipa: ipaB }, tip: pairTip };
+  });
+}
+
 const lines = readFileSync(sourcePath, 'utf8').split(/\r?\n/);
 const decks = parseDecks(lines);
 mkdirSync(join(outDir, 'decks'), { recursive: true });
@@ -108,4 +126,7 @@ const index = [
 ].join('\n');
 writeFileSync(join(outDir, 'decks', 'index.ts'), index);
 writeFileSync(join(outDir, 'prompts.json'), JSON.stringify(parsePrompts(lines), null, 2) + '\n');
+const pairs = parsePairs(lines);
+writeFileSync(join(outDir, 'minimal-pairs.json'), JSON.stringify(pairs, null, 2) + '\n');
+console.log(`Wrote ${pairs.length} minimal pairs`);
 console.log(`Wrote ${decks.length} decks: ${decks.map(d => `${d.id}(${d.terms.length}t/${d.sentences.length}s)`).join(', ')}`);

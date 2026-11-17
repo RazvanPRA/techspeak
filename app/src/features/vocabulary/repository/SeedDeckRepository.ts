@@ -11,10 +11,11 @@ export class SeedDeckRepository implements DeckRepository {
   }
 
   listDecks(): DeckSummary[] {
-    return [...this.decks.values()].map(({ id, title, sentences }) => ({
+    return [...this.decks.values()].map(({ id, title, sentences, terms }) => ({
       id,
       title,
       sentenceCount: sentences.length,
+      termCount: terms.length,
     }));
   }
 

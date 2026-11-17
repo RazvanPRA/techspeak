@@ -11,4 +11,8 @@ export class InMemoryAttemptRepository implements AttemptRepository {
   async listByDeck(deckId: string): Promise<AttemptRecord[]> {
     return this.records.filter(r => r.deckId === deckId);
   }
+
+  async listRecent(limit: number): Promise<AttemptRecord[]> {
+    return [...this.records].reverse().slice(0, limit);
+  }
 }

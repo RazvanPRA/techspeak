@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
-import { ShadowingDependenciesProvider } from '@/features/shadowing';
 import { createDependencies } from './dependencies';
+import { FeatureProviders } from './FeatureProviders';
 import { RootTabs } from './navigation/RootTabs';
 import { createStore } from './store';
 
@@ -13,11 +13,11 @@ export function App() {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <ShadowingDependenciesProvider value={deps.shadowing}>
+        <FeatureProviders deps={deps}>
           <NavigationContainer>
             <RootTabs />
           </NavigationContainer>
-        </ShadowingDependenciesProvider>
+        </FeatureProviders>
       </SafeAreaProvider>
     </Provider>
   );

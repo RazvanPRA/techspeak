@@ -6,4 +6,5 @@ export const styles = StyleSheet.create({
   body: { fontSize: theme.font.md, color: theme.color.text },
   muted: { fontSize: theme.font.md, color: theme.color.textMuted },
   caption: { fontSize: theme.font.sm, color: theme.color.textMuted },
+  error: { fontSize: theme.font.md, color: theme.color.wrong },
 });

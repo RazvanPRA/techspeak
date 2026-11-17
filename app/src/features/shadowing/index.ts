@@ -8,4 +8,6 @@ export {
 export { shadowingReducer, type ShadowingState } from './state/slice';
 export type { AttemptRepository } from './repository/AttemptRepository';
 export { InMemoryAttemptRepository } from './repository/InMemoryAttemptRepository';
+export { SqliteAttemptRepository } from './repository/SqliteAttemptRepository';
+export { countMissedWords } from './services/countMissedWords.service';
 export type { AttemptRecord } from './model/types';

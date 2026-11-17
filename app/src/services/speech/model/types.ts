@@ -42,3 +42,6 @@ export type AssessInput = {
 export interface PronunciationAssessor {
   assess(input: AssessInput): Promise<Assessment>;
 }
+
+export type RecordPhase = 'idle' | 'recording' | 'assessing';
+export type ModelStatus = 'loading' | 'ready' | 'error';
