@@ -1,0 +1,41 @@
+export const en = {
+  tabs: {
+    shadowing: 'Shadowing',
+  },
+  decks: {
+    title: 'Choose a deck',
+    sentences: '{count} sentences',
+  },
+  shadowing: {
+    title: 'Shadowing',
+    progress: 'Sentence {current} of {total}',
+    play: 'Play',
+    playSlow: 'Slow',
+    playHint: 'Plays the model sentence',
+    holdToRecord: 'Hold to talk',
+    holdHint: 'Hold while you say the sentence, release to check it',
+    recording: 'Recording… release to check',
+    transcribing: 'Checking…',
+    modelThenMe: 'Model → me',
+    next: 'Next sentence',
+    score: 'Score {score}',
+    passed: 'Great, you passed! Move on or keep polishing.',
+    keepGoing: 'Aim for {target}. Tap a red word to hear it, then try again.',
+    heard: 'I heard: “{transcript}”',
+    extraWords: 'Extra words: {words}',
+    micDenied: 'Microphone access is needed to record.',
+    noDeck: 'Pick a deck first.',
+  },
+  model: {
+    loading: 'Downloading the speech model… {percent}%',
+    loadingHint: 'One-time download (~150 MB). Wi-Fi recommended.',
+    error: 'Could not load the speech model.',
+    retry: 'Retry',
+  },
+  word: {
+    close: 'Close',
+    listen: 'Listen',
+    spelled: 'Spell it: {term}',
+    hint: 'Tip: {hint}',
+  },
+} as const;
