@@ -1,5 +1,6 @@
 import type { Term } from '@/features/vocabulary';
 import type { WordResult } from '@/services/scoring';
+import type { AssessmentDetails } from '@/services/speech';
 
 /** One display word of a sentence. `normalized` is what the diff compares. */
 export type SentenceToken = {
@@ -15,6 +16,8 @@ export type AttemptResult = {
   transcript: string;
   words: WordResult[];
   audioPath: string;
+  /** Phoneme-level scores when Azure assessed the attempt (not persisted). */
+  details?: AssessmentDetails;
 };
 
 export type AttemptRecord = AttemptResult & {

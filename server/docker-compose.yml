@@ -1,4 +1,6 @@
 # Local PostgreSQL for the TechSpeak backend: `docker compose up -d`
+name: techspeak
+
 services:
   db:
     image: postgres:17-alpine

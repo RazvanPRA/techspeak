@@ -1,0 +1,92 @@
+{
+  "id": "nestjs",
+  "title": "NestJS",
+  "terms": [
+    {
+      "term": "NestJS",
+      "ipa": "\"nest-J-S\"",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "controller",
+      "ipa": "/kənˈtroʊlər/",
+      "spelled": false,
+      "hint": "stress on 2nd",
+      "meaning": "handles routes",
+      "example": null
+    },
+    {
+      "term": "provider",
+      "ipa": "/prəˈvaɪdər/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "injectable class",
+      "example": null
+    },
+    {
+      "term": "interceptor",
+      "ipa": "/ˌɪntərˈsɛptər/",
+      "spelled": false,
+      "hint": "stress on \"SEP\"",
+      "meaning": "wraps request/response",
+      "example": null
+    },
+    {
+      "term": "guard",
+      "ipa": "/ɡɑːrd/",
+      "spelled": false,
+      "hint": "silent \"u\"",
+      "meaning": "authorization check",
+      "example": null
+    },
+    {
+      "term": "pipe",
+      "ipa": "/paɪp/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "validation / transformation",
+      "example": null
+    },
+    {
+      "term": "exception filter",
+      "ipa": "/ɪkˈsɛpʃən ˈfɪltər/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "error-to-response mapper",
+      "example": null
+    },
+    {
+      "term": "DTO",
+      "ipa": null,
+      "spelled": true,
+      "hint": "spell it",
+      "meaning": "data transfer object",
+      "example": null
+    },
+    {
+      "term": "microservice",
+      "ipa": "/ˈmaɪkroʊˌsɜːrvɪs/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "payload",
+      "ipa": "/ˈpeɪloʊd/",
+      "spelled": false,
+      "hint": "\"PAY-lode\"",
+      "meaning": "request body",
+      "example": null
+    }
+  ],
+  "sentences": [
+    "The guard rejects the request before it reaches the controller.",
+    "We validate the DTO with a pipe, so invalid payloads never reach the service.",
+    "An interceptor logs the response time for every endpoint.",
+    "Each provider is registered in a module and injected where it's needed."
+  ]
+}

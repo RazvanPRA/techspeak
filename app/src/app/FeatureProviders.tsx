@@ -1,5 +1,6 @@
 import React, { type ReactNode } from 'react';
 import { MinimalPairsDependenciesProvider } from '@/features/minimal-pairs';
+import { ScenariosDependenciesProvider } from '@/features/scenarios';
 import { ShadowingDependenciesProvider } from '@/features/shadowing';
 import { VocabularyDependenciesProvider } from '@/features/vocabulary';
 import type { AppDependencies } from './dependencies';
@@ -10,7 +11,9 @@ export function FeatureProviders({ deps, children }: { deps: AppDependencies; ch
     <ShadowingDependenciesProvider value={deps.shadowing}>
       <VocabularyDependenciesProvider value={deps.vocabulary}>
         <MinimalPairsDependenciesProvider value={deps.minimalPairs}>
-          {children}
+          <ScenariosDependenciesProvider value={deps.scenarios}>
+            {children}
+          </ScenariosDependenciesProvider>
         </MinimalPairsDependenciesProvider>
       </VocabularyDependenciesProvider>
     </ShadowingDependenciesProvider>

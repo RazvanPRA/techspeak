@@ -4,7 +4,9 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { Provider } from 'react-redux';
 import { seedDecks } from '@/content/decks';
 import minimalPairs from '@/content/minimal-pairs.json';
+import prompts from '@/content/prompts.json';
 import { InMemoryPairAttemptRepository, SeedPairRepository } from '@/features/minimal-pairs';
+import { SeedPromptRepository, UnavailableFeedbackRepository } from '@/features/scenarios';
 import { InMemoryAttemptRepository } from '@/features/shadowing';
 import { InMemoryVocabularyRepository, SeedDeckRepository } from '@/features/vocabulary';
 import { defaultAliases } from '@/services/scoring';
@@ -48,11 +50,20 @@ function createDeps(): AppDependencies {
     },
     minimalPairs: {
       ...speech,
+      assessor: new SttDiffAssessor(recognizer, defaultAliases),
       pairs: new SeedPairRepository(minimalPairs),
       attempts: new InMemoryPairAttemptRepository(),
       aliases: defaultAliases,
       clock,
       random: () => 0,
+    },
+    scenarios: {
+      recorder: speech.recorder,
+      recognizer,
+      decks,
+      prompts: new SeedPromptRepository(prompts),
+      feedback: new UnavailableFeedbackRepository(),
+      clock,
     },
   };
 }
@@ -83,6 +94,15 @@ describe('RootTabs', () => {
     expect(await screen.findByText('Shadowing')).toBeOnTheScreen();
     expect(screen.getByText('Vocabulary')).toBeOnTheScreen();
     expect(screen.getByText('Minimal pairs')).toBeOnTheScreen();
+    expect(screen.getByText('Scenarios')).toBeOnTheScreen();
+  });
+
+  it('opens the scenario prompt list', async () => {
+    await setup();
+    await fireEvent.press(await screen.findByText('Scenarios'));
+    expect(
+      await screen.findByRole('button', { name: 'How would you investigate a slow query?' }),
+    ).toBeOnTheScreen();
   });
 
   it('opens the vocabulary deck filter and the minimal-pairs drill', async () => {

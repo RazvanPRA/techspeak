@@ -3,6 +3,7 @@ import { theme } from '@/shared/theme';
 
 export const styles = StyleSheet.create({
   title: { fontSize: theme.font.xl, fontWeight: '700', color: theme.color.text },
+  heading: { fontSize: theme.font.lg, fontWeight: '600', color: theme.color.text },
   body: { fontSize: theme.font.md, color: theme.color.text },
   muted: { fontSize: theme.font.md, color: theme.color.textMuted },
   caption: { fontSize: theme.font.sm, color: theme.color.textMuted },

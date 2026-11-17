@@ -1,5 +1,8 @@
 import type {
+  AssessInput,
+  Assessment,
   MicPermission,
+  PronunciationAssessor,
   PlayerRepository,
   RecognizerRepository,
   RecorderRepository,
@@ -42,6 +45,16 @@ export class FakePlayerRepository implements PlayerRepository {
     this.played.push(path);
   }
   async stop(): Promise<void> {}
+}
+
+/** Returns a fixed assessment (e.g. one with Azure details) and records every input. */
+export class FakeAssessor implements PronunciationAssessor {
+  readonly inputs: AssessInput[] = [];
+  constructor(public result: Assessment) {}
+  async assess(input: AssessInput): Promise<Assessment> {
+    this.inputs.push(input);
+    return this.result;
+  }
 }
 
 export class FakeRecognizerRepository implements RecognizerRepository {

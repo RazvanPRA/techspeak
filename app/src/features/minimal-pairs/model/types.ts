@@ -16,7 +16,15 @@ export type Round = {
   other: PairWord;
 };
 
-/** Say-it result: the target was heard, the other word was heard, or neither clearly. */
-export type SayVerdict = 'correct' | 'confused' | 'unclear';
+/**
+ * Say-it result: the target was heard, the other word was heard, neither clearly, or (with
+ * phoneme scoring) the target was recognised but pronounced below the pass accuracy.
+ */
+export type SayVerdict = 'correct' | 'confused' | 'unclear' | 'weak';
 
-export type SayResult = { verdict: SayVerdict; transcript: string };
+export type SayResult = {
+  verdict: SayVerdict;
+  transcript: string;
+  /** Azure's accuracy for the target word, when available. */
+  accuracy: number | null;
+};

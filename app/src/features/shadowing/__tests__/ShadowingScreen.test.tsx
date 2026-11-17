@@ -5,8 +5,9 @@ import { Provider } from 'react-redux';
 import { seedDecks } from '@/content/decks';
 import { SeedDeckRepository } from '@/features/vocabulary';
 import { defaultAliases } from '@/services/scoring';
-import { SttDiffAssessor } from '@/services/speech';
+import { type PronunciationAssessor, SttDiffAssessor } from '@/services/speech';
 import {
+  FakeAssessor,
   FakePlayerRepository,
   FakeRecognizerRepository,
   FakeRecorderRepository,
@@ -22,7 +23,7 @@ import { initialShadowingState, shadowingReducer } from '../state/slice';
 
 const SENTENCE = "The query is slow because there's no index on the foreign key column.";
 
-async function setup(transcript: string) {
+async function setup(transcript: string, assessor?: PronunciationAssessor) {
   const recognizer = new FakeRecognizerRepository(transcript);
   const deps: ShadowingDependencies = {
     decks: new SeedDeckRepository(seedDecks),
@@ -31,7 +32,7 @@ async function setup(transcript: string) {
     recorder: new FakeRecorderRepository('/attempt-1.wav'),
     player: new FakePlayerRepository(),
     recognizer,
-    assessor: new SttDiffAssessor(recognizer, defaultAliases),
+    assessor: assessor ?? new SttDiffAssessor(recognizer, defaultAliases),
     clock: () => new Date('2026-11-17T10:00:00Z'),
   };
   const store = configureStore({
@@ -97,6 +98,40 @@ describe('ShadowingScreen', () => {
     await holdToTalk();
     expect(await screen.findByText('Microphone access is needed to record.')).toBeOnTheScreen();
     expect(screen.queryByTestId('attempt-result')).toBeNull();
+  });
+
+  it('sends the written sentence and shows Azure sub-scores and per-sound scores', async () => {
+    const assessor = new FakeAssessor({
+      transcript: 'The kwery is slow.',
+      words: [{ kind: 'wrong', targetIndex: 1, word: 'query', spoken: 'query' }],
+      score: 64,
+      details: {
+        accuracy: 61.4,
+        fluency: 88,
+        completeness: 100,
+        prosody: 75,
+        words: [
+          {
+            targetIndex: 1,
+            word: 'query',
+            accuracy: 42,
+            phonemes: [
+              { phoneme: 'k', accuracy: 95 },
+              { phoneme: 'w', accuracy: 20 },
+            ],
+          },
+        ],
+      },
+    });
+    await setup('', assessor);
+    await holdToTalk();
+    expect(await screen.findByText('Score 64')).toBeOnTheScreen();
+    expect(assessor.inputs[0]?.referenceText).toBe(SENTENCE);
+    expect(screen.getByText('Accuracy 61 · Fluency 88 · Intonation 75')).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'query' }));
+    expect(screen.getByText('Your accuracy: 42')).toBeOnTheScreen();
+    expect(screen.getByText('Sounds: k 95 · w 20')).toBeOnTheScreen();
   });
 
   it('opens word details with IPA and hint on tap', async () => {

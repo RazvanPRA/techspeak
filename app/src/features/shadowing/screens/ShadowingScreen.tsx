@@ -31,7 +31,12 @@ export function ShadowingScreen() {
       />
       {s.error && <AppText variant="error">{s.error}</AppText>}
       {s.summary && <AttemptResultPanel result={s.summary} onNext={s.next} />}
-      <WordDetailSheet token={s.selectedToken} onClose={s.word.close} onListen={s.word.listen} />
+      <WordDetailSheet
+        token={s.selectedToken}
+        score={s.selectedScore}
+        onClose={s.word.close}
+        onListen={s.word.listen}
+      />
     </ScrollView>
   );
 }

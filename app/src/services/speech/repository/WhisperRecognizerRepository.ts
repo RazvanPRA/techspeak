@@ -1,4 +1,5 @@
 import { initWhisper, type WhisperContext } from 'whisper.rn';
+import { stripNonSpeech } from '../model/stripNonSpeech.service';
 import type { ProgressCallback, RecognizerRepository } from '../model/types';
 
 export interface ModelProvider {
@@ -21,7 +22,7 @@ export class WhisperRecognizerRepository implements RecognizerRepository {
       prompt: hints.length > 0 ? hints.join(', ') : undefined,
     });
     const { result } = await promise;
-    return result.trim();
+    return stripNonSpeech(result);
   }
 
   private getContext(onProgress?: ProgressCallback): Promise<WhisperContext> {

@@ -6,7 +6,11 @@ import { attemptCompleted } from '../state/slice';
 import { useShadowingDispatch, useShadowingSelector } from '../state/hooks';
 
 /** Scores a recording against the current sentence, stores it and publishes the result. */
-export function useAssessAttempt(tokens: readonly SentenceToken[], hints: readonly string[]) {
+export function useAssessAttempt(
+  tokens: readonly SentenceToken[],
+  hints: readonly string[],
+  sentence: string,
+) {
   const { assessor, attempts, clock } = useShadowingDependencies();
   const dispatch = useShadowingDispatch();
   const deckId = useShadowingSelector(selectDeckId);
@@ -18,6 +22,7 @@ export function useAssessAttempt(tokens: readonly SentenceToken[], hints: readon
         targetWords: tokens.map(t => t.normalized),
         audioPath,
         hints,
+        referenceText: sentence,
       });
       const result = { ...assessment, audioPath };
       dispatch(attemptCompleted(result));
@@ -25,6 +30,6 @@ export function useAssessAttempt(tokens: readonly SentenceToken[], hints: readon
         await attempts.save({ ...result, deckId, sentenceIndex, createdAt: clock().toISOString() });
       }
     },
-    [assessor, attempts, clock, dispatch, deckId, sentenceIndex, tokens, hints],
+    [assessor, attempts, clock, dispatch, deckId, sentenceIndex, tokens, hints, sentence],
   );
 }

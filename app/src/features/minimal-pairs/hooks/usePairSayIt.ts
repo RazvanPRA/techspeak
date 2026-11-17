@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
+import { normalizeWord } from '@/services/scoring';
 import { useHoldToRecord, useMicPermission, useSpeak } from '@/services/speech';
 import { useMinimalPairsDependencies } from '../dependencies/MinimalPairsDependencies';
 import { PAIR_WORD_RATE } from '../model/constants';
 import type { Round, SayResult } from '../model/types';
-import { judgeSaid } from '../services/judgeRound.service';
+import { judgeAssessment } from '../services/judgeRound.service';
 
 /** Say-it: record the target word; every try is judged and reported. */
 export function usePairSayIt(round: Round, onResult: (correct: boolean) => Promise<void>) {
-  const { recorder, recognizer, aliases, tts } = useMinimalPairsDependencies();
+  const { recorder, assessor, aliases, tts } = useMinimalPairsDependencies();
   const { isPermitted } = useMicPermission(recorder);
   const speech = useSpeak(tts);
   const [result, setResult] = useState<SayResult | null>(null);
@@ -16,13 +17,18 @@ export function usePairSayIt(round: Round, onResult: (correct: boolean) => Promi
 
   const onRecorded = useCallback(
     async (audioPath: string) => {
-      const hints = [round.pair.a.word, round.pair.b.word];
-      const transcript = await recognizer.transcribe(audioPath, hints);
-      const verdict = judgeSaid(round, transcript, aliases);
-      setResult({ verdict, transcript });
-      await onResult(verdict === 'correct');
+      const word = round.target.word;
+      const assessment = await assessor.assess({
+        targetWords: [normalizeWord(word)],
+        referenceText: word,
+        audioPath,
+        hints: [round.pair.a.word, round.pair.b.word],
+      });
+      const judged = judgeAssessment(round, assessment, aliases);
+      setResult(judged);
+      await onResult(judged.verdict === 'correct');
     },
-    [round, recognizer, aliases, onResult],
+    [round, assessor, aliases, onResult],
   );
 
   const record = useHoldToRecord({ recorder, isPermitted, onRecorded, beforeRecord: speech.stop });

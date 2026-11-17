@@ -1,0 +1,92 @@
+{
+  "id": "prisma-orm",
+  "title": "Prisma & ORMs",
+  "terms": [
+    {
+      "term": "Prisma",
+      "ipa": "/ˈprɪzmə/",
+      "spelled": false,
+      "hint": "/z/ sound",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "ORM",
+      "ipa": null,
+      "spelled": true,
+      "hint": "spell it",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "migration",
+      "ipa": "/maɪˈɡreɪʃən/",
+      "spelled": false,
+      "hint": "\"my-GRAY-shun\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "seed",
+      "ipa": "/siːd/",
+      "spelled": false,
+      "hint": "long /iː/",
+      "meaning": "initial data",
+      "example": null
+    },
+    {
+      "term": "relation",
+      "ipa": "/rɪˈleɪʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "Drizzle",
+      "ipa": "/ˈdrɪzəl/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "TypeORM",
+      "ipa": "\"type-O-R-M\"",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "N+1 problem",
+      "ipa": "\"N plus one\"",
+      "spelled": false,
+      "hint": null,
+      "meaning": "one query per item",
+      "example": null
+    },
+    {
+      "term": "eager loading",
+      "ipa": "/ˈiːɡər ˈloʊdɪŋ/",
+      "spelled": false,
+      "hint": "\"EE-ger\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "raw query",
+      "ipa": "/rɔː ˈkwɪri/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    }
+  ],
+  "sentences": [
+    "Prisma generates a type-safe client from the schema file.",
+    "We have an N plus one problem, so let's include the relation in the first query.",
+    "Never edit a migration that has already been applied in production.",
+    "The seed script creates test users for local development."
+  ]
+}

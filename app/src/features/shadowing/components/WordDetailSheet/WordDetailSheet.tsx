@@ -4,9 +4,10 @@ import { AppText, Button } from '@/components/ui';
 import { t } from '@/shared/i18n';
 import { styles } from './WordDetailSheet.styles';
 import type { WordDetailSheetProps } from './WordDetailSheet.types';
+import { WordScoreLines } from './WordScoreLines';
 
 /** Tap-a-word sheet: the term with IPA, hint and meaning, plus "listen". */
-export function WordDetailSheet({ token, onClose, onListen }: WordDetailSheetProps) {
+export function WordDetailSheet({ token, score, onClose, onListen }: WordDetailSheetProps) {
   const term = token?.term ?? null;
   const spokenText = term?.term ?? token?.normalized ?? '';
   const handleListen = useCallback(() => onListen(spokenText), [onListen, spokenText]);
@@ -21,6 +22,7 @@ export function WordDetailSheet({ token, onClose, onListen }: WordDetailSheetPro
         {term?.spelled && <AppText>{t('word.spelled', { term: term.term })}</AppText>}
         {term?.hint && <AppText variant="muted">{t('word.hint', { hint: term.hint })}</AppText>}
         {term?.meaning && <AppText variant="caption">{term.meaning}</AppText>}
+        {score && <WordScoreLines score={score} />}
         <View style={styles.actions}>
           <Button label={t('word.listen')} onPress={handleListen} />
           <Button label={t('word.close')} variant="secondary" onPress={onClose} />

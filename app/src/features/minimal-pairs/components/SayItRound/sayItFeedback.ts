@@ -5,5 +5,8 @@ import type { Round, SayResult } from '../../model/types';
 export function sayItFeedback(round: Round, result: SayResult): string {
   if (result.verdict === 'correct') return t('pairs.sayCorrect', { word: round.target.word });
   if (result.verdict === 'confused') return t('pairs.sayConfused', { other: round.other.word });
+  if (result.verdict === 'weak') {
+    return t('pairs.sayWeak', { word: round.target.word, accuracy: result.accuracy ?? 0 });
+  }
   return t('pairs.sayUnclear', { transcript: result.transcript.trim() || '…' });
 }

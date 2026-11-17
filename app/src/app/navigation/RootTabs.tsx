@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MinimalPairsNavigator } from '@/features/minimal-pairs';
+import { ScenariosNavigator } from '@/features/scenarios';
 import { ShadowingNavigator } from '@/features/shadowing';
 import { VocabularyNavigator } from '@/features/vocabulary';
 import { t } from '@/shared/i18n';
@@ -26,6 +27,11 @@ export function RootTabs() {
         name="MinimalPairsTab"
         component={MinimalPairsNavigator}
         options={{ title: t('tabs.minimalPairs') }}
+      />
+      <Tab.Screen
+        name="ScenariosTab"
+        component={ScenariosNavigator}
+        options={{ title: t('tabs.scenarios') }}
       />
     </Tab.Navigator>
   );

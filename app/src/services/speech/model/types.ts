@@ -32,11 +32,38 @@ export interface RecognizerRepository {
   transcribe(path: string, hints?: readonly string[]): Promise<string>;
 }
 
-export type Assessment = { transcript: string; words: WordResult[]; score: number };
+export type PhonemeScore = { phoneme: string; accuracy: number };
+
+/** One word as a phoneme-level assessor scored it. `targetIndex` is null for inserted words. */
+export type ScoredWord = {
+  targetIndex: number | null;
+  word: string;
+  accuracy: number;
+  phonemes: PhonemeScore[];
+};
+
+/** Extra detail from a phoneme-level assessor (Azure). Absent for the speech-to-text assessor. */
+export type AssessmentDetails = {
+  accuracy: number;
+  fluency: number;
+  completeness: number;
+  prosody: number | null;
+  words: ScoredWord[];
+};
+
+export type Assessment = {
+  transcript: string;
+  words: WordResult[];
+  score: number;
+  details?: AssessmentDetails;
+};
+
 export type AssessInput = {
   targetWords: readonly string[];
   audioPath: string;
   hints?: readonly string[];
+  /** The sentence as written; phoneme-level assessors score against it. */
+  referenceText?: string;
 };
 
 export interface PronunciationAssessor {

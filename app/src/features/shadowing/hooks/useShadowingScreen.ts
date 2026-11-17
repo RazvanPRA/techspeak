@@ -18,7 +18,7 @@ export function useShadowingScreen() {
   const model = useSpeechModel(recognizer);
   const { isPermitted } = useMicPermission(recorder);
   const playback = usePlayback();
-  const assess = useAssessAttempt(current.tokens, current.hints);
+  const assess = useAssessAttempt(current.tokens, current.hints, current.sentence);
   const record = useHoldToRecord({
     recorder,
     isPermitted,
@@ -69,6 +69,7 @@ export function useShadowingScreen() {
     canCompare: audioPath !== null,
     error: record.error ?? playback.error,
     selectedToken: selectedIndex === null ? null : current.tokens[selectedIndex] ?? null,
+    selectedScore: selectedIndex === null ? null : view.wordScores[selectedIndex] ?? null,
     word: { select: setSelectedIndex, close: closeWord, listen: listenWord },
     next,
   };

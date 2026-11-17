@@ -1,6 +1,27 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { EmptyState, SegmentedControl, SelectableRow } from '..';
+import { ActionRow, AppText, EmptyState, SegmentedControl, SelectableRow, TitledCard } from '..';
+
+describe('ActionRow', () => {
+  it('is a button labelled with its caption, and reports presses', async () => {
+    const onPress = jest.fn();
+    await render(<ActionRow label="Explain ACID" caption="SQL" onPress={onPress} />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Explain ACID, SQL' }));
+    expect(onPress).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('TitledCard', () => {
+  it('renders a section header above its content', async () => {
+    await render(
+      <TitledCard title="Fluency">
+        <AppText>128 words per minute</AppText>
+      </TitledCard>,
+    );
+    expect(screen.getByRole('header', { name: 'Fluency' })).toBeOnTheScreen();
+    expect(screen.getByText('128 words per minute')).toBeOnTheScreen();
+  });
+});
 
 describe('EmptyState', () => {
   it('shows its message', async () => {

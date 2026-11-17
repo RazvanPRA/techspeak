@@ -2,7 +2,9 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import minimalPairs from '@/content/minimal-pairs.json';
 import { defaultAliases } from '@/services/scoring';
+import { type PronunciationAssessor, SttDiffAssessor } from '@/services/speech';
 import {
+  FakeAssessor,
   FakeRecognizerRepository,
   FakeRecorderRepository,
   FakeTtsRepository,
@@ -15,7 +17,7 @@ import { InMemoryPairAttemptRepository } from '../repository/InMemoryPairAttempt
 import { SeedPairRepository } from '../repository/SeedPairRepository';
 import { MinimalPairsScreen } from '../screens/MinimalPairsScreen';
 
-async function setup() {
+async function setup(assessor?: PronunciationAssessor) {
   const recognizer = new FakeRecognizerRepository('');
   const deps: MinimalPairsDependencies = {
     pairs: new SeedPairRepository(minimalPairs),
@@ -23,6 +25,7 @@ async function setup() {
     tts: new FakeTtsRepository(),
     recorder: new FakeRecorderRepository('/pair.wav'),
     recognizer,
+    assessor: assessor ?? new SttDiffAssessor(recognizer, defaultAliases),
     aliases: defaultAliases,
     clock: () => new Date('2026-11-17T10:00:00.000Z'),
     random: () => 0, // always the first available pair, side A
@@ -103,5 +106,39 @@ describe('MinimalPairsScreen — say it', () => {
       ['say', true],
       ['say', false],
     ]);
+  });
+});
+
+describe('MinimalPairsScreen — say it with Azure scores', () => {
+  const scored = (accuracy: number) =>
+    new FakeAssessor({
+      transcript: 'think',
+      words: [{ kind: 'ok', targetIndex: 0, word: 'think' }],
+      score: accuracy,
+      details: {
+        accuracy,
+        fluency: 100,
+        completeness: 100,
+        prosody: null,
+        words: [{ targetIndex: 0, word: 'think', accuracy, phonemes: [] }],
+      },
+    });
+
+  it('sends the target word as reference text and passes at 80+', async () => {
+    const assessor = scored(91);
+    await setup(assessor);
+    await fireEvent.press(await screen.findByRole('tab', { name: 'Say it' }));
+    await holdToTalk();
+    expect(await screen.findByText('Clear “think”. Nice!')).toBeOnTheScreen();
+    expect(assessor.inputs[0]).toMatchObject({ referenceText: 'think', targetWords: ['think'] });
+  });
+
+  it('reports a recognised but weak word with its score', async () => {
+    const { deps } = await setup(scored(62));
+    await fireEvent.press(await screen.findByRole('tab', { name: 'Say it' }));
+    await holdToTalk();
+    expect(await screen.findByText('“think” scored 62/100. Aim for 80.')).toBeOnTheScreen();
+    const [latest] = await deps.attempts.listRecent(1);
+    expect(latest).toMatchObject({ mode: 'say', correct: false });
   });
 });

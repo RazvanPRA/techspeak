@@ -1,0 +1,108 @@
+{
+  "id": "angular",
+  "title": "Angular",
+  "terms": [
+    {
+      "term": "Angular",
+      "ipa": "/ˈæŋɡjələr/",
+      "spelled": false,
+      "hint": "\"ANG-gyu-ler\"",
+      "meaning": "the framework",
+      "example": null
+    },
+    {
+      "term": "RxJS",
+      "ipa": null,
+      "spelled": true,
+      "hint": "spell it",
+      "meaning": "reactive extensions library",
+      "example": null
+    },
+    {
+      "term": "observable",
+      "ipa": "/əbˈzɜːrvəbəl/",
+      "spelled": false,
+      "hint": "/z/ sound, stress on 2nd",
+      "meaning": "stream of values",
+      "example": null
+    },
+    {
+      "term": "subscribe",
+      "ipa": "/səbˈskraɪb/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "listen to an observable",
+      "example": null
+    },
+    {
+      "term": "directive",
+      "ipa": "/dəˈrɛktɪv/",
+      "spelled": false,
+      "hint": "stress on 2nd",
+      "meaning": "DOM behaviour attribute",
+      "example": null
+    },
+    {
+      "term": "decorator",
+      "ipa": "/ˈdɛkəreɪtər/",
+      "spelled": false,
+      "hint": "stress on 1st",
+      "meaning": "metadata annotation",
+      "example": null
+    },
+    {
+      "term": "dependency injection",
+      "ipa": "/dɪˈpɛndənsi ɪnˈdʒɛkʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "providing dependencies from outside",
+      "example": null
+    },
+    {
+      "term": "change detection",
+      "ipa": "/tʃeɪndʒ dɪˈtɛkʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "syncing state to the view",
+      "example": null
+    },
+    {
+      "term": "signal",
+      "ipa": "/ˈsɪɡnəl/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "reactive primitive",
+      "example": null
+    },
+    {
+      "term": "module",
+      "ipa": "/ˈmɑːdʒuːl/",
+      "spelled": false,
+      "hint": "\"MOD-jool\", not \"mo-DOOL\"",
+      "meaning": "grouping unit",
+      "example": null
+    },
+    {
+      "term": "template",
+      "ipa": "/ˈtɛmplət/",
+      "spelled": false,
+      "hint": "both /-plət/ and /-pleɪt/ OK",
+      "meaning": "component HTML",
+      "example": null
+    },
+    {
+      "term": "lazy loading",
+      "ipa": "/ˈleɪzi ˈloʊdɪŋ/",
+      "spelled": false,
+      "hint": "\"LAY-zee\"",
+      "meaning": "loading on demand",
+      "example": null
+    }
+  ],
+  "sentences": [
+    "Signals make change detection more granular than zone-based detection.",
+    "Remember to unsubscribe from the observable when the component is destroyed.",
+    "We inject the service through the constructor using dependency injection.",
+    "The feature module is lazy loaded, so it doesn't increase the initial bundle."
+  ]
+}

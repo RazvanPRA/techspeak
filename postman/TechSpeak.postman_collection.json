@@ -1,0 +1,244 @@
+{
+  "info": {
+    "name": "TechSpeak API",
+    "description": "Requests and tests for the TechSpeak server (milestone 3). Select the `local` environment, start the server (`yarn --cwd server start:dev`) and run the collection. Run it from the `postman/` folder so the WAV fixture path resolves (`npx newman run TechSpeak.postman_collection.json -e local.postman_environment.json`).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      { "key": "key", "value": "x-api-key", "type": "string" },
+      { "key": "value", "value": "{{apiKey}}", "type": "string" },
+      { "key": "in", "value": "header", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Docs",
+      "item": [
+        {
+          "name": "OpenAPI document",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('documents both endpoints', () => {",
+                  "  const paths = Object.keys(pm.response.json().paths);",
+                  "  pm.expect(paths).to.include.members(['/assessment', '/feedback']);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/docs-json", "host": ["{{baseUrl}}"], "path": ["docs-json"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Feedback",
+      "item": [
+        {
+          "name": "Answer feedback (rule-based)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has the Part B shape', () => {",
+                  "  pm.expect(body).to.include.keys('overallScore', 'strength', 'corrections', 'pronunciation', 'fluency', 'improvedAnswer', 'phrasesToReuse', 'vocabulary');",
+                  "  pm.expect(body.overallScore).to.be.within(0, 100);",
+                  "});",
+                  "pm.test('counts the filler words', () => {",
+                  "  pm.expect(body.fluency.fillers).to.include.members(['um', 'basically']);",
+                  "});",
+                  "pm.test('finds the deck terms used', () => {",
+                  "  pm.expect(body.vocabulary.used).to.include('query');",
+                  "});",
+                  "pm.test('LLM-only fields stay empty (free tier)', () => {",
+                  "  pm.expect(body.corrections).to.eql([]);",
+                  "  pm.expect(body.improvedAnswer).to.eql('');",
+                  "});",
+                  "pm.test('gives three phrases to reuse', () => pm.expect(body.phrasesToReuse).to.have.length(3));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"How would you investigate a slow query?\",\n  \"deckId\": \"sql\",\n  \"transcript\": \"Um, first I would run explain analyze on the query to see the plan. If it does a sequential scan on a big table, I would basically add an index on the column in the where clause and check the plan again.\",\n  \"durationSeconds\": 25\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+          }
+        },
+        {
+          "name": "Answer feedback with Azure word scores",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('tips the low-accuracy word', () => {",
+                  "  const words = pm.response.json().pronunciation.map(p => p.word);",
+                  "  pm.expect(words).to.eql(['query']);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"How would you investigate a slow query?\",\n  \"deckId\": \"sql\",\n  \"transcript\": \"I would check the query plan first.\",\n  \"durationSeconds\": 4,\n  \"pronunciation\": [\n    { \"word\": \"query\", \"accuracy\": 48, \"phonemes\": [{ \"phoneme\": \"w\", \"accuracy\": 20 }] },\n    { \"word\": \"plan\", \"accuracy\": 95 }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+          }
+        },
+        {
+          "name": "Unknown deck → 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"Explain COBOL.\",\n  \"deckId\": \"cobol\",\n  \"transcript\": \"\",\n  \"durationSeconds\": 1\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+          }
+        },
+        {
+          "name": "Invalid body → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('names the bad fields', () => {",
+                  "  const message = pm.response.json().message.join(' ');",
+                  "  pm.expect(message).to.include('durationSeconds');",
+                  "  pm.expect(message).to.include('prompt');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deckId\": \"sql\",\n  \"transcript\": \"hello\",\n  \"durationSeconds\": -5\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+          }
+        },
+        {
+          "name": "No API key → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assessment",
+      "item": [
+        {
+          "name": "Pronunciation assessment (Azure)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// 200 with an Azure key in server/.env; 503 without one (the app then scores on the device).",
+                  "pm.test('200, or 503 when Azure is not configured', () => pm.expect(pm.response.code).to.be.oneOf([200, 503]));",
+                  "if (pm.response.code === 200) {",
+                  "  const body = pm.response.json();",
+                  "  pm.test('has scores and words', () => {",
+                  "    pm.expect(body).to.include.keys('recognized', 'transcript', 'scores', 'words');",
+                  "    pm.expect(body.scores.pronunciation).to.be.within(0, 100);",
+                  "  });",
+                  "} else {",
+                  "  pm.test('explains how to enable Azure', () => pm.expect(pm.response.json().message).to.include('AZURE_SPEECH_KEY'));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "referenceText", "value": "Think about the cache.", "type": "text" },
+                { "key": "audio", "type": "file", "src": "fixtures/tone-16k-mono.wav" }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/assessment", "host": ["{{baseUrl}}"], "path": ["assessment"] }
+          }
+        },
+        {
+          "name": "Missing audio → 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "referenceText", "value": "hello", "type": "text" }]
+            },
+            "url": { "raw": "{{baseUrl}}/assessment", "host": ["{{baseUrl}}"], "path": ["assessment"] }
+          }
+        }
+      ]
+    }
+  ]
+}
