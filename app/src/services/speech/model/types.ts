@@ -72,3 +72,9 @@ export interface PronunciationAssessor {
 
 export type RecordPhase = 'idle' | 'recording' | 'assessing';
 export type ModelStatus = 'loading' | 'ready' | 'error';
+
+/** Keeps a recording that must outlive the cache (e.g. the day-28 talk). */
+export interface RecordingArchive {
+  /** Copies the file to permanent app storage and returns its new path. */
+  keep(path: string): Promise<string>;
+}

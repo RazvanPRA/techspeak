@@ -1,5 +1,7 @@
 // Public API of the vocabulary feature. Other modules import only from here.
 export { VocabularyNavigator } from './navigation/VocabularyNavigator';
+export { VocabularySessionStep } from './components/VocabularySessionStep';
+export { countReviewCards } from './services/countReviewCards.service';
 export type { VocabularyStackParamList } from './navigation/types';
 export {
   VocabularyDependenciesProvider,

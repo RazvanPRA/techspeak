@@ -5,4 +5,5 @@ export * from './Card';
 export * from './EmptyState';
 export * from './SegmentedControl';
 export * from './SelectableRow';
+export * from './Stepper';
 export * from './TitledCard';

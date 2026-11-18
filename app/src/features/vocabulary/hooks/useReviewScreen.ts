@@ -3,15 +3,15 @@ import { useSpeak, useSpeechModel } from '@/services/speech';
 import { errorMessage } from '@/shared/utils';
 import { TERM_RATE } from '../model/constants';
 import { reviewKey } from '../model/reviewKey';
-import type { Grade } from '../model/types';
+import type { Grade, ReviewSelection } from '../model/types';
 import { useVocabularyDependencies } from '../dependencies/VocabularyDependencies';
 import { useReviewQueue } from './useReviewQueue';
 import { useSayItCheck } from './useSayItCheck';
 
 /** Wires the review screen: the queue, "say it aloud", reveal, self-grading and listening. */
-export function useReviewScreen() {
+export function useReviewScreen(selection?: ReviewSelection) {
   const { tts, recognizer } = useVocabularyDependencies();
-  const queue = useReviewQueue();
+  const queue = useReviewQueue(selection);
   const model = useSpeechModel(recognizer);
   const speech = useSpeak(tts);
   const term = queue.current?.term.term ?? null;

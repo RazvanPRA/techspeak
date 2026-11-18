@@ -8,15 +8,20 @@ import {
   SeedPairRepository,
   SqlitePairAttemptRepository,
 } from '@/features/minimal-pairs';
+import type { ProgressDependencies } from '@/features/progress';
 import {
   type FeedbackRepository,
   RemoteFeedbackRepository,
   type ScenariosDependencies,
   SeedPromptRepository,
+  SqliteScenarioAnswerRepository,
+  SqliteTalkRepository,
   UnavailableFeedbackRepository,
 } from '@/features/scenarios';
+import type { SessionDependencies } from '@/features/session';
 import {
   countMissedWords,
+  SHADOWING_DECK_IDS,
   type ShadowingDependencies,
   SqliteAttemptRepository,
 } from '@/features/shadowing';
@@ -28,20 +33,26 @@ import {
 import { HttpClient } from '@/services/api';
 import { createLazyExecutor } from '@/services/db';
 import { openDatabase } from '@/services/db/openDatabase';
+import { NativeReminderRepository } from '@/services/reminders/NativeReminderRepository';
 import { defaultAliases } from '@/services/scoring';
+import { KeyValueSettingsRepository } from '@/services/settings';
+import { MmkvKeyValueStore } from '@/services/settings/repository/MmkvKeyValueStore';
 import {
   AzurePronunciationAssessor,
   FallbackAssessor,
   type PronunciationAssessor,
+  RateScaledTtsRepository,
   type RecognizerRepository,
   SttDiffAssessor,
 } from '@/services/speech';
 import { AudioApiPlayerRepository } from '@/services/speech/repository/AudioApiPlayerRepository';
 import { AudioApiRecorderRepository } from '@/services/speech/repository/AudioApiRecorderRepository';
+import { FsRecordingArchive } from '@/services/speech/repository/FsRecordingArchive';
 import { NativeSpeechTtsRepository } from '@/services/speech/repository/NativeSpeechTtsRepository';
 import { WhisperModelStore } from '@/services/speech/repository/WhisperModelStore';
 import { WhisperRecognizerRepository } from '@/services/speech/repository/WhisperRecognizerRepository';
 import { apiConfig } from './config/apiConfig';
+import { createProgressSources, createSessionSources } from './crossFeatureSources';
 
 /** How many recent shadowing attempts feed the vocabulary "weak words" deck. */
 const SHADOWING_ATTEMPTS_FOR_WEAK_WORDS = 200;
@@ -51,6 +62,8 @@ export type AppDependencies = {
   vocabulary: VocabularyDependencies;
   minimalPairs: MinimalPairsDependencies;
   scenarios: ScenariosDependencies;
+  session: SessionDependencies;
+  progress: ProgressDependencies;
 };
 
 /** Azure (via the server) when there is one, always falling back to on-device scoring. */
@@ -65,34 +78,35 @@ function createServerBacked(http: HttpClient | null, recognizer: RecognizerRepos
   return { assessor, feedback };
 }
 
+// arch-exception: the composition root wires every feature; splitting it would hide the wiring.
 export function createDependencies(): AppDependencies {
-  // One database, one speech stack: shared by every feature.
+  // One database, one settings store, one speech stack: shared by every feature.
   const db = createLazyExecutor(() => openDatabase());
+  const settings = new KeyValueSettingsRepository(new MmkvKeyValueStore());
   const recognizer = new WhisperRecognizerRepository(new WhisperModelStore());
-  const speech = {
-    tts: new NativeSpeechTtsRepository(),
-    recorder: new AudioApiRecorderRepository(),
-    recognizer,
-  };
+  const tts = new RateScaledTtsRepository(
+    new NativeSpeechTtsRepository(),
+    () => settings.get().speechRate,
+  );
+  const speech = { tts, recorder: new AudioApiRecorderRepository(), recognizer };
+  const player = new AudioApiPlayerRepository();
   const http = apiConfig ? new HttpClient(apiConfig) : null;
   const { assessor, feedback } = createServerBacked(http, recognizer);
   const decks = new SeedDeckRepository(seedDecks);
   const attempts = new SqliteAttemptRepository(db);
+  const pairAttempts = new SqlitePairAttemptRepository(db);
+  const reviews = new SqliteVocabularyRepository(db);
+  const answers = new SqliteScenarioAnswerRepository(db);
+  const promptRepository = new SeedPromptRepository(prompts);
   const clock = () => new Date();
+  const progress = createProgressSources({ attempts, pairAttempts, reviews, answers });
 
   return {
-    shadowing: {
-      ...speech,
-      decks,
-      attempts,
-      player: new AudioApiPlayerRepository(),
-      assessor,
-      clock,
-    },
+    shadowing: { ...speech, decks, attempts, player, assessor, clock },
     vocabulary: {
       ...speech,
       decks,
-      reviews: new SqliteVocabularyRepository(db),
+      reviews,
       aliases: defaultAliases,
       // Cross-feature data goes through shadowing's public API only.
       missedWords: async () =>
@@ -103,7 +117,7 @@ export function createDependencies(): AppDependencies {
       ...speech,
       assessor,
       pairs: new SeedPairRepository(minimalPairs),
-      attempts: new SqlitePairAttemptRepository(db),
+      attempts: pairAttempts,
       aliases: defaultAliases,
       clock,
       random: Math.random,
@@ -111,10 +125,25 @@ export function createDependencies(): AppDependencies {
     scenarios: {
       recorder: speech.recorder,
       recognizer,
+      player,
       decks,
-      prompts: new SeedPromptRepository(prompts),
+      prompts: promptRepository,
       feedback,
+      answers,
+      talks: new SqliteTalkRepository(db),
+      archive: new FsRecordingArchive(),
       clock,
+      random: Math.random,
     },
+    session: {
+      settings,
+      reminders: new NativeReminderRepository(),
+      ...createSessionSources(progress, { decks, reviews }, clock),
+      shadowingDeckIds: SHADOWING_DECK_IDS,
+      promptIds: promptRepository.listGroups().flatMap(g => g.prompts.map(p => p.id)),
+      clock,
+      random: Math.random,
+    },
+    progress,
   };
 }

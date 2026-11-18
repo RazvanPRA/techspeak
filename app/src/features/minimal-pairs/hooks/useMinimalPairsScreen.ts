@@ -4,10 +4,10 @@ import type { PairMode } from '../model/types';
 import { usePairResults } from './usePairResults';
 import { usePairRound } from './usePairRound';
 
-/** Mode switch, the current round and the session score. */
-export function useMinimalPairsScreen() {
+/** Mode switch, the current round and the session score. focusSound limits the pairs. */
+export function useMinimalPairsScreen(focusSound?: string | null) {
   const [mode, setMode] = useState<PairMode>('listen');
-  const { round, next } = usePairRound();
+  const { round, next } = usePairRound(focusSound);
   const { score, record, error } = usePairResults(mode);
   const segments = useMemo(
     () => [

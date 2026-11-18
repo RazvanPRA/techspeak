@@ -9,8 +9,8 @@ import { useAnswerTimer } from './useAnswerTimer';
 
 type OnRecorded = (audioPath: string, durationSeconds: number) => Promise<void>;
 
-/** Tap to start, tap to stop (auto-stops at 2 minutes); hands the WAV and its length on. */
-export function useAnswerRecording(onRecorded: OnRecorded) {
+/** Tap to start, tap to stop (auto-stops at `maxSeconds`); hands the WAV and its length on. */
+export function useAnswerRecording(onRecorded: OnRecorded, maxSeconds = MAX_ANSWER_SECONDS) {
   const { recorder, clock } = useScenariosDependencies();
   const { isPermitted } = useMicPermission(recorder);
   const [phase, setPhase] = useState<AnswerPhase>('idle');
@@ -18,7 +18,7 @@ export function useAnswerRecording(onRecorded: OnRecorded) {
   const phaseRef = useRef<AnswerPhase>('idle');
   const finishRef = useRef<() => void>(() => undefined);
   const onLimit = useCallback(() => finishRef.current(), []);
-  const timer = useAnswerTimer({ clock, maxSeconds: MAX_ANSWER_SECONDS, onLimit });
+  const timer = useAnswerTimer({ clock, maxSeconds, onLimit });
 
   const move = useCallback((next: AnswerPhase) => {
     phaseRef.current = next;

@@ -30,6 +30,19 @@ describe('SqliteAttemptRepository', () => {
     expect(await repo.listByDeck('sql')).toEqual([attempt('sql', 0)]);
   });
 
+  it('round-trips Azure details when the attempt has them', async () => {
+    const repo = await setup();
+    const details = {
+      accuracy: 70,
+      fluency: 80,
+      completeness: 100,
+      prosody: null,
+      words: [{ targetIndex: 0, word: 'the', accuracy: 40, phonemes: [{ phoneme: 'ð', accuracy: 30 }] }],
+    };
+    await repo.save({ ...attempt('sql', 0), details });
+    expect((await repo.listRecent(1))[0]?.details).toEqual(details);
+  });
+
   it('filters by deck', async () => {
     const repo = await setup();
     await repo.save(attempt('sql', 0));

@@ -1,5 +1,5 @@
 import { countFillers } from '../services/countFillers.service';
-import { formatDuration } from '../services/formatDuration.service';
+import { formatDuration } from '@/shared/utils';
 import { summarizeFluency } from '../services/summarizeFluency.service';
 import { wordsPerMinute } from '../services/wordsPerMinute.service';
 

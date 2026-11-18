@@ -33,3 +33,11 @@ export type AnswerResult = {
 };
 
 export type AnswerPhase = 'idle' | 'recording' | 'processing';
+
+/** One thing to improve after a mock interview. `severity` is 0–1; higher matters more. */
+export type InterviewIssue =
+  | { kind: 'length'; severity: number; shortAnswers: number; total: number }
+  | { kind: 'fillers'; severity: number; perMinute: number; fillers: string[] }
+  | { kind: 'pace'; severity: number; wordsPerMinute: number; tooFast: boolean }
+  | { kind: 'pronunciation'; severity: number; words: string[] }
+  | { kind: 'vocabulary'; severity: number; terms: string[] };

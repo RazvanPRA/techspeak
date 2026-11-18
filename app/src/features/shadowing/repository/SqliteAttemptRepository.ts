@@ -1,10 +1,11 @@
 import { z } from 'zod';
 import type { SqlExecutor, SqlRow } from '@/services/db';
-import { AttemptRowSchema, WordResultSchema } from '../model/schemas';
+import { AssessmentDetailsSchema, AttemptRowSchema, WordResultSchema } from '../model/schemas';
 import type { AttemptRecord } from '../model/types';
 import type { AttemptRepository } from './AttemptRepository';
 
-const COLUMNS = 'deck_id, sentence_index, score, transcript, words_json, audio_path, created_at';
+const COLUMNS =
+  'deck_id, sentence_index, score, transcript, words_json, audio_path, created_at, details_json';
 const WordsSchema = z.array(WordResultSchema);
 
 function toRecord(row: SqlRow): AttemptRecord {
@@ -17,6 +18,7 @@ function toRecord(row: SqlRow): AttemptRecord {
     words: WordsSchema.parse(JSON.parse(r.words_json)),
     audioPath: r.audio_path,
     createdAt: r.created_at,
+    ...(r.details_json ? { details: AssessmentDetailsSchema.parse(JSON.parse(r.details_json)) } : {}),
   };
 }
 
@@ -24,7 +26,7 @@ export class SqliteAttemptRepository implements AttemptRepository {
   constructor(private readonly db: SqlExecutor) {}
 
   async save(record: AttemptRecord): Promise<void> {
-    await this.db.execute(`INSERT INTO attempts (${COLUMNS}) VALUES (?, ?, ?, ?, ?, ?, ?)`, [
+    await this.db.execute(`INSERT INTO attempts (${COLUMNS}) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [
       record.deckId,
       record.sentenceIndex,
       record.score,
@@ -32,6 +34,7 @@ export class SqliteAttemptRepository implements AttemptRepository {
       JSON.stringify(record.words),
       record.audioPath,
       record.createdAt,
+      record.details ? JSON.stringify(record.details) : null,
     ]);
   }
 
