@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { AppText, SegmentedControl, Stepper, TitledCard } from '@/components/ui';
 import { t } from '@/shared/i18n';
 import { theme } from '@/shared/theme';
+import { VoicePicker } from '../components/VoicePicker';
 import { useReminderSettings } from '../hooks/useReminderSettings';
 import { usePracticeSettings } from '../hooks/usePracticeSettings';
 import { REMINDER_STEPS } from '../model/constants';
@@ -13,7 +14,7 @@ const ON_OFF = [
   { key: 'off' as const, label: t('settings.off') },
 ];
 
-/** Speech rate, daily goal and the daily reminder. */
+/** Speech rate, daily goal, model voice and the daily reminder. */
 export function SettingsScreen() {
   const p = usePracticeSettings();
   const r = useReminderSettings();
@@ -41,6 +42,9 @@ export function SettingsScreen() {
           onDecrement={() => p.changeGoal(-1)}
           onIncrement={() => p.changeGoal(1)}
         />
+      </TitledCard>
+      <TitledCard title={t('settings.voiceSection')}>
+        <VoicePicker />
       </TitledCard>
       <TitledCard title={t('settings.reminderSection')}>
         <SegmentedControl

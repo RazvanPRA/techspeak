@@ -89,6 +89,7 @@ export function createTestDependencies(): AppDependencies {
     session: {
       settings: new KeyValueSettingsRepository(new InMemoryKeyValueStore()),
       reminders: new InMemoryReminderRepository(),
+      tts: speech.tts,
       ...createSessionSources(progress, { decks, reviews }, clock),
       shadowingDeckIds: ['react-rn', 'sql', 'go'],
       promptIds: ['sql-1', 'sql-2'],

@@ -27,6 +27,28 @@ describe('KeyValueSettingsRepository', () => {
     });
   });
 
+  it('loads settings saved before the voice picker with the system voice', () => {
+    const store = new InMemoryKeyValueStore();
+    const old: Record<string, unknown> = { ...DEFAULT_SETTINGS, speechRate: 0.9 };
+    delete old.voiceId;
+    store.set(KEY, JSON.stringify(old));
+    const loaded = new KeyValueSettingsRepository(store).get();
+    expect(loaded.voiceId).toBeNull();
+    expect(loaded.speechRate).toBe(0.9);
+  });
+
+  it('saves the chosen voice and reads it back', () => {
+    const store = new InMemoryKeyValueStore();
+    new KeyValueSettingsRepository(store).update({ voiceId: 'en-gb-x-1' });
+    expect(new KeyValueSettingsRepository(store).get().voiceId).toBe('en-gb-x-1');
+  });
+
+  it('rejects an empty voice id', () => {
+    const repo = new KeyValueSettingsRepository(new InMemoryKeyValueStore());
+    expect(() => repo.update({ voiceId: '' })).toThrow();
+    expect(repo.get().voiceId).toBeNull();
+  });
+
   it('falls back to the defaults on invalid or corrupt data', () => {
     const store = new InMemoryKeyValueStore();
     store.set(KEY, JSON.stringify({ speechRate: 9 }));

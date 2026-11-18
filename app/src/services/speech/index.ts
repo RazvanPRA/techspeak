@@ -23,6 +23,7 @@ export { SttDiffAssessor } from './assessor/SttDiffAssessor';
 export { AzurePronunciationAssessor } from './assessor/AzurePronunciationAssessor';
 export { FallbackAssessor } from './assessor/FallbackAssessor';
 export { RateScaledTtsRepository } from './repository/RateScaledTtsRepository';
+export { VoicedTtsRepository } from './repository/VoicedTtsRepository';
 export { useHoldToRecord } from './hooks/useHoldToRecord';
 export { useMicPermission } from './hooks/useMicPermission';
 export { useSpeak } from './hooks/useSpeak';

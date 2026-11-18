@@ -44,6 +44,7 @@ import {
   RateScaledTtsRepository,
   type RecognizerRepository,
   SttDiffAssessor,
+  VoicedTtsRepository,
 } from '@/services/speech';
 import { AudioApiPlayerRepository } from '@/services/speech/repository/AudioApiPlayerRepository';
 import { AudioApiRecorderRepository } from '@/services/speech/repository/AudioApiRecorderRepository';
@@ -84,10 +85,11 @@ export function createDependencies(): AppDependencies {
   const db = createLazyExecutor(() => openDatabase());
   const settings = new KeyValueSettingsRepository(new MmkvKeyValueStore());
   const recognizer = new WhisperRecognizerRepository(new WhisperModelStore());
-  const tts = new RateScaledTtsRepository(
+  const rateScaledTts = new RateScaledTtsRepository(
     new NativeSpeechTtsRepository(),
     () => settings.get().speechRate,
   );
+  const tts = new VoicedTtsRepository(rateScaledTts, () => settings.get().voiceId);
   const speech = { tts, recorder: new AudioApiRecorderRepository(), recognizer };
   const player = new AudioApiPlayerRepository();
   const http = apiConfig ? new HttpClient(apiConfig) : null;
@@ -138,6 +140,7 @@ export function createDependencies(): AppDependencies {
     session: {
       settings,
       reminders: new NativeReminderRepository(),
+      tts: rateScaledTts, // the voice picker previews voices itself
       ...createSessionSources(progress, { decks, reviews }, clock),
       shadowingDeckIds: SHADOWING_DECK_IDS,
       promptIds: promptRepository.listGroups().flatMap(g => g.prompts.map(p => p.id)),

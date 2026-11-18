@@ -3,11 +3,17 @@ import { Pressable, Text } from 'react-native';
 import { styles } from './SelectableRow.styles';
 import type { SelectableRowProps } from './SelectableRow.types';
 
-/** A list row that toggles on press (multi-select lists). Exposed as a checkbox. */
-function SelectableRowComponent({ label, caption, selected, onPress }: SelectableRowProps) {
+/** A list row that toggles on press. Exposed as a checkbox (multi-select) or a radio button. */
+function SelectableRowComponent({
+  label,
+  caption,
+  selected,
+  onPress,
+  role = 'checkbox',
+}: SelectableRowProps) {
   return (
     <Pressable
-      accessibilityRole="checkbox"
+      accessibilityRole={role}
       accessibilityLabel={caption ? `${label}, ${caption}` : label}
       accessibilityState={{ checked: selected }}
       onPress={onPress}

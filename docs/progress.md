@@ -326,5 +326,44 @@
 
 ### Next
 - Record the day-1 baseline talk on a phone now; record the day-28 talk on 2026-12-16 and compare.
-- Optional: a voice picker (`tts.listVoices`), an iOS reminder (UNUserNotificationCenter), an
-  `LLMFeedbackProvider` (Ollama) for corrections, cloud sync / `GET /attempts`.
+- Optional: ~~a voice picker~~ (done in milestone 5, part 1), an iOS reminder
+  (UNUserNotificationCenter), an `LLMFeedbackProvider` (Ollama) for corrections, cloud sync /
+  `GET /attempts`.
+
+## Milestone 5 (optional), Part 1: voice picker (2026-11-18)
+
+### Built
+- **Setting:** `voiceId: string | null` in the settings zod schema (`null` = system voice). Old
+  stored settings load unchanged: the missing field gets the default (tested).
+- **`VoicedTtsRepository` (`services/speech`, new decorator):** wraps `RateScaledTtsRepository` in
+  `dependencies.ts`, so every feature speaks with the chosen voice and no feature changed.
+  - The voice is read at speak time; the installed list (`listVoices('en')`) is fetched once.
+  - A voice that is no longer installed → the system voice (pure `resolveVoiceId`, tested).
+  - A failed voice list never blocks speech: system voice now, retry on the next utterance.
+  - An explicit `voiceId` in `speak()` wins (used by the preview).
+- **Settings → "Model voice" card (`features/session`):** `VoicePicker` with "System voice" plus
+  every English voice as radio rows, each with a **Preview** button ("Let's walk through the pull
+  request before the standup."). Hook `useVoiceSettings`; pure `toVoiceOptions` turns Android ids
+  (`en-au-x-aua-local`) into "Australian English · Voice 1 / en-AU · offline", keeps the offline
+  copy of each voice, hides the `-language` locale default, and keeps readable (iOS) names as they are.
+- The session feature gets the TTS **without** the voice decorator, so "Preview" on "System voice"
+  really plays the system voice and not the saved one.
+- `SelectableRow` (UI kit) gained an optional `role: 'checkbox' | 'radio'` (default unchanged).
+- `FakeTtsRepository` accepts a voice list.
+- No new libraries.
+
+### Tests
+- Settings migration / save / empty id rejected; `resolveVoiceId`; `VoicedTtsRepository` (chosen
+  voice, fallback, explicit voice, one list call, list failure + retry); `toVoiceOptions`;
+  `SettingsScreen` flow with a fake voice list (list, select, system = null, preview, error).
+- `yarn test` 422/422, `yarn typecheck`, `yarn lint` clean.
+
+### Known issues / pending
+- **Emulator check done:** Settings lists the Google TTS voices with readable names, select +
+  preview work, and the choice survives an app restart. Listening to the difference needs a real
+  device or emulator audio.
+- **iOS:** pending (Windows). iOS voice names (e.g. "Samantha") are shown as they are.
+- `en.ts` is now 250 lines (still the `arch-exception` strings dictionary).
+
+### Next
+- Part 2: `OllamaFeedbackProvider` (server only). Part 3: cloud sync to my own server.
