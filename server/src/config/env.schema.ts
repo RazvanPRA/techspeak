@@ -20,6 +20,22 @@ export const EnvSchema = z
     AZURE_SPEECH_KEY: optionalText,
     AZURE_SPEECH_REGION: optionalText,
     FFMPEG_PATH: optionalText,
+    /** Local Ollama server, e.g. http://localhost:11434. Unset = rule-based feedback only. */
+    OLLAMA_URL: z.preprocess(emptyToUndefined, z.string().url().optional()),
+    OLLAMA_MODEL: z.preprocess(
+      emptyToUndefined,
+      z.string().min(1).default('qwen3.5:2b'),
+    ),
+    /** The app gives up on POST /feedback after 15 s, so the model must finish well before. */
+    OLLAMA_TIMEOUT_MS: z.preprocess(
+      emptyToUndefined,
+      z.coerce
+        .number()
+        .int()
+        .min(1000)
+        .max(13_000, 'OLLAMA_TIMEOUT_MS must stay under the app timeout (15 s)')
+        .default(12_000),
+    ),
   })
   .refine(
     (env) =>

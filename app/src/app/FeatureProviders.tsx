@@ -4,6 +4,7 @@ import { ProgressDependenciesProvider } from '@/features/progress';
 import { ScenariosDependenciesProvider } from '@/features/scenarios';
 import { SessionDependenciesProvider } from '@/features/session';
 import { ShadowingDependenciesProvider } from '@/features/shadowing';
+import { SyncDependenciesProvider } from '@/features/sync';
 import { VocabularyDependenciesProvider } from '@/features/vocabulary';
 import type { AppDependencies } from './dependencies';
 
@@ -15,7 +16,9 @@ export function FeatureProviders({ deps, children }: { deps: AppDependencies; ch
         <MinimalPairsDependenciesProvider value={deps.minimalPairs}>
           <ScenariosDependenciesProvider value={deps.scenarios}>
             <SessionDependenciesProvider value={deps.session}>
-              <ProgressDependenciesProvider value={deps.progress}>{children}</ProgressDependenciesProvider>
+              <ProgressDependenciesProvider value={deps.progress}>
+                <SyncDependenciesProvider value={deps.sync}>{children}</SyncDependenciesProvider>
+              </ProgressDependenciesProvider>
             </SessionDependenciesProvider>
           </ScenariosDependenciesProvider>
         </MinimalPairsDependenciesProvider>

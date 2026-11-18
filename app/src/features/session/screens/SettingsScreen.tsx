@@ -1,8 +1,10 @@
 import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { AppText, SegmentedControl, Stepper, TitledCard } from '@/components/ui';
+import { SyncRow } from '@/features/sync';
 import { t } from '@/shared/i18n';
 import { theme } from '@/shared/theme';
+import { VoicePicker } from '../components/VoicePicker';
 import { useReminderSettings } from '../hooks/useReminderSettings';
 import { usePracticeSettings } from '../hooks/usePracticeSettings';
 import { REMINDER_STEPS } from '../model/constants';
@@ -13,7 +15,7 @@ const ON_OFF = [
   { key: 'off' as const, label: t('settings.off') },
 ];
 
-/** Speech rate, daily goal and the daily reminder. */
+/** Speech rate, daily goal, backup (sync), the daily reminder and the model voice. */
 export function SettingsScreen() {
   const p = usePracticeSettings();
   const r = useReminderSettings();
@@ -42,6 +44,9 @@ export function SettingsScreen() {
           onIncrement={() => p.changeGoal(1)}
         />
       </TitledCard>
+      <TitledCard title={t('sync.section')}>
+        <SyncRow />
+      </TitledCard>
       <TitledCard title={t('settings.reminderSection')}>
         <SegmentedControl
           segments={ON_OFF}
@@ -65,6 +70,10 @@ export function SettingsScreen() {
           onIncrement={() => r.shift(REMINDER_STEPS.minute)}
         />
         {r.error && <AppText variant="error">{r.error}</AppText>}
+      </TitledCard>
+      {/* Last: the voice list can be long. */}
+      <TitledCard title={t('settings.voiceSection')}>
+        <VoicePicker />
       </TitledCard>
     </ScrollView>
   );

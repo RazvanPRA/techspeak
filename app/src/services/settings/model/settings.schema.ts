@@ -26,10 +26,13 @@ export const SettingsSchema = z.object({
   dailyGoalMinutes: z.number().int().min(DAILY_GOAL_RANGE.min).max(DAILY_GOAL_RANGE.max),
   reminder: ReminderSchema,
   streak: StreakSchema,
+  /** Chosen TTS voice id; null = the system voice. */
+  voiceId: z.string().min(1).nullable(),
 });
 
 export const DEFAULT_SETTINGS: z.infer<typeof SettingsSchema> = {
   speechRate: 1,
+  voiceId: null,
   dailyGoalMinutes: 18,
   reminder: { enabled: false, hour: 19, minute: 0 },
   streak: { lastDay: null, count: 0 },

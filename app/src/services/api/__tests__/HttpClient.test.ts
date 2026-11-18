@@ -30,6 +30,15 @@ const Schema = z.object({ ok: z.boolean() });
 const config = { baseUrl: 'http://localhost:3000/', apiKey: 'dev-key' };
 
 describe('HttpClient', () => {
+  it('gets JSON with the API key and no body', async () => {
+    const { fetchFn, calls } = fakeFetch({ status: 200, body: { ok: true } });
+    const client = new HttpClient({ ...config, fetchFn });
+    await expect(client.getJson('/sync?since=s1', Schema)).resolves.toEqual({ ok: true });
+    expect(calls[0]?.url).toBe('http://localhost:3000/sync?since=s1');
+    expect(calls[0]?.init).toMatchObject({ method: 'GET', headers: { 'x-api-key': 'dev-key' } });
+    expect(calls[0]?.init.body).toBeUndefined();
+  });
+
   it('posts JSON with the API key and validates the reply', async () => {
     const { fetchFn, calls } = fakeFetch({ status: 200, body: { ok: true, extra: 1 } });
     const client = new HttpClient({ ...config, fetchFn });

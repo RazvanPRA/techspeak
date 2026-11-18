@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { SqlExecutor, SqlRow } from '@/services/db';
+import { NEW_SYNC_ID_SQL, type SqlExecutor, type SqlRow } from '@/services/db';
 import { PairAttemptSchema } from '../model/schemas';
 import type { PairAttempt } from '../model/types';
 import type { PairAttemptRepository } from './PairAttemptRepository';
@@ -25,11 +25,12 @@ function toAttempt(row: SqlRow): PairAttempt {
   });
 }
 
+
 export class SqlitePairAttemptRepository implements PairAttemptRepository {
   constructor(private readonly db: SqlExecutor) {}
 
   async save(attempt: PairAttempt): Promise<void> {
-    await this.db.execute(`INSERT INTO pair_attempts (${COLUMNS}) VALUES (?, ?, ?, ?, ?)`, [
+    await this.db.execute(`INSERT INTO pair_attempts (${COLUMNS}, sync_id) VALUES (?, ?, ?, ?, ?, ${NEW_SYNC_ID_SQL})`, [
       attempt.pairId,
       attempt.sound,
       attempt.mode,

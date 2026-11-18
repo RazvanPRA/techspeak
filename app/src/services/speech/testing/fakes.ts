@@ -13,14 +13,17 @@ import type {
 } from '../model/types';
 
 /** In-memory test doubles for the speech contracts. They record calls and never touch native code. */
+const DEFAULT_VOICES: TtsVoice[] = [{ id: 'en-us-1', name: 'Test voice', language: 'en-US' }];
+
 export class FakeTtsRepository implements TtsRepository {
   readonly spoken: Array<{ text: string; options: SpeakOptions }> = [];
+  constructor(private readonly voices: TtsVoice[] = DEFAULT_VOICES) {}
   async speak(text: string, options: SpeakOptions): Promise<void> {
     this.spoken.push({ text, options });
   }
   async stop(): Promise<void> {}
   async listVoices(): Promise<TtsVoice[]> {
-    return [{ id: 'en-us-1', name: 'Test voice', language: 'en-US' }];
+    return this.voices;
   }
 }
 

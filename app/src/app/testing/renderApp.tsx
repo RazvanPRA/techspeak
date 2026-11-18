@@ -14,6 +14,7 @@ import {
   UnavailableFeedbackRepository,
 } from '@/features/scenarios';
 import { InMemoryAttemptRepository } from '@/features/shadowing';
+import { createTestSyncDependencies } from '@/features/sync';
 import { InMemoryVocabularyRepository, SeedDeckRepository } from '@/features/vocabulary';
 import { InMemoryReminderRepository } from '@/services/reminders';
 import { defaultAliases } from '@/services/scoring';
@@ -89,6 +90,7 @@ export function createTestDependencies(): AppDependencies {
     session: {
       settings: new KeyValueSettingsRepository(new InMemoryKeyValueStore()),
       reminders: new InMemoryReminderRepository(),
+      tts: speech.tts,
       ...createSessionSources(progress, { decks, reviews }, clock),
       shadowingDeckIds: ['react-rn', 'sql', 'go'],
       promptIds: ['sql-1', 'sql-2'],
@@ -96,6 +98,7 @@ export function createTestDependencies(): AppDependencies {
       random: () => 0,
     },
     progress,
+    sync: createTestSyncDependencies(clock),
   };
 }
 

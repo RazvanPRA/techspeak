@@ -326,5 +326,193 @@
 
 ### Next
 - Record the day-1 baseline talk on a phone now; record the day-28 talk on 2026-12-16 and compare.
-- Optional: a voice picker (`tts.listVoices`), an iOS reminder (UNUserNotificationCenter), an
-  `LLMFeedbackProvider` (Ollama) for corrections, cloud sync / `GET /attempts`.
+- Optional: ~~a voice picker~~ (done in milestone 5, part 1), an iOS reminder
+  (UNUserNotificationCenter), an `LLMFeedbackProvider` (Ollama) for corrections, cloud sync /
+  `GET /attempts`.
+
+## Milestone 5 (optional), Part 1: voice picker (2026-11-18)
+
+### Built
+- **Setting:** `voiceId: string | null` in the settings zod schema (`null` = system voice). Old
+  stored settings load unchanged: the missing field gets the default (tested).
+- **`VoicedTtsRepository` (`services/speech`, new decorator):** wraps `RateScaledTtsRepository` in
+  `dependencies.ts`, so every feature speaks with the chosen voice and no feature changed.
+  - The voice is read at speak time; the installed list (`listVoices('en')`) is fetched once.
+  - A voice that is no longer installed → the system voice (pure `resolveVoiceId`, tested).
+  - A failed voice list never blocks speech: system voice now, retry on the next utterance.
+  - An explicit `voiceId` in `speak()` wins (used by the preview).
+- **Settings → "Model voice" card (`features/session`):** `VoicePicker` with "System voice" plus
+  every English voice as radio rows, each with a **Preview** button ("Let's walk through the pull
+  request before the standup."). Hook `useVoiceSettings`; pure `toVoiceOptions` turns Android ids
+  (`en-au-x-aua-local`) into "Australian English · Voice 1 / en-AU · offline", keeps the offline
+  copy of each voice, hides the `-language` locale default, and keeps readable (iOS) names as they are.
+- The session feature gets the TTS **without** the voice decorator, so "Preview" on "System voice"
+  really plays the system voice and not the saved one.
+- `SelectableRow` (UI kit) gained an optional `role: 'checkbox' | 'radio'` (default unchanged).
+- `FakeTtsRepository` accepts a voice list.
+- No new libraries.
+
+### Tests
+- Settings migration / save / empty id rejected; `resolveVoiceId`; `VoicedTtsRepository` (chosen
+  voice, fallback, explicit voice, one list call, list failure + retry); `toVoiceOptions`;
+  `SettingsScreen` flow with a fake voice list (list, select, system = null, preview, error).
+- `yarn test` 422/422, `yarn typecheck`, `yarn lint` clean.
+
+### Known issues / pending
+- **Emulator check done:** Settings lists the Google TTS voices with readable names, select +
+  preview work, and the choice survives an app restart. Listening to the difference needs a real
+  device or emulator audio.
+- **iOS:** pending (Windows). iOS voice names (e.g. "Samantha") are shown as they are.
+- `en.ts` is now 250 lines (still the `arch-exception` strings dictionary).
+
+### Next
+- ~~Part 2: `OllamaFeedbackProvider` (server only).~~ Done. Part 3: cloud sync to my own server.
+
+## Milestone 5 (optional), Part 2: Ollama grammar feedback (2026-11-18)
+
+### Built (server only; the app did not change)
+- **`OllamaFeedbackProvider`** (`server/src/feedback/providers/`): runs `RuleBasedFeedbackProvider`
+  and a local Ollama model **at the same time**. The model fills only `corrections` and
+  `improvedAnswer`; score, fluency, pronunciation, phrases and vocabulary stay rule-based, so a bad
+  model answer cannot change them. The merged result is validated with `ScenarioFeedbackSchema`.
+- **Fallback to the rules** when Ollama is off, slower than `OLLAMA_TIMEOUT_MS` (the request is
+  aborted), returns invalid JSON, or returns JSON of the wrong shape. Logged as a warning; the
+  request never fails because of the model. An empty transcript skips the model.
+- **Which provider answered is stored:** `FeedbackProvider.review()` now returns
+  `{ feedback, provider }`, and `Feedback.provider` holds `"ollama:qwen3.5:2b"` or `"rules"`.
+- **Prompt:** the Part B system prompt (`scenario-feedback.prompt.ts`) with its `{{variables}}`
+  filled (`buildFeedbackMessages`, pure), plus one paragraph asking only for the two fields. The
+  transcript is the user message.
+- **Ollama API** (`POST /api/chat`, docs.ollama.com/api/chat): `stream: false`, `think: false`,
+  `format` = the JSON Schema of the two fields (structured outputs, from zod via
+  `z.toJSONSchema`), `temperature 0.2`, `num_predict 700`, `keep_alive 30m` (no reload per answer).
+  `FetchOllamaClient` uses Node's `fetch`; tests use a fake client.
+- **Chosen in `FeedbackModule` only:** `OLLAMA_URL` set → Ollama + rules, unset → rules only.
+- **Env:** `OLLAMA_URL` (optional), `OLLAMA_MODEL` (default `qwen3.5:2b`), `OLLAMA_TIMEOUT_MS`
+  (default 12000, max 13000 because the app gives up after 15 s).
+- No new npm packages.
+
+### Model choice
+- **`qwen3.5:2b`** (~2.7 GB, free, thinking turned off): small enough for a CPU inside the 12 s
+  budget. On a slow CPU use `qwen3.5:0.8b` (~1.3 GB); on a fast one try `qwen3.5:4b` (better
+  corrections). Change only `OLLAMA_MODEL`.
+
+### Setup (Windows)
+1. Install Ollama: https://ollama.com/download (or `winget install Ollama.Ollama`). It runs in the
+   background on `http://localhost:11434`.
+2. `ollama pull qwen3.5:2b`
+3. Check it: `ollama run qwen3.5:2b "Correct: I have went to the standup yesterday."`
+4. In `server/.env`: `OLLAMA_URL=http://localhost:11434` (keep `OLLAMA_MODEL`, `OLLAMA_TIMEOUT_MS`).
+5. Restart the server. Answer a scenario in the app: "Corrections" and "Improved answer" appear.
+   The server log says `Using rule-based feedback: …` whenever it fell back.
+6. If it falls back with "no answer in 12000 ms", use `qwen3.5:0.8b`. The first answer after a
+   start can be slow while the model loads.
+
+### Tests
+- `buildFeedbackMessages` (every variable filled, Azure scores listed, `$` in transcripts kept).
+- `OllamaFeedbackProvider` with a fake HTTP client: valid answer merged, request shape (prompt,
+  schema, no thinking), rule-based fields protected, fallback on invalid JSON / wrong shape /
+  unknown correction type / odd body / Ollama off / timeout (aborted), empty answer skips the model.
+- `FeedbackService` stores the provider that answered; env schema (defaults, URL, timeout limit).
+- `yarn --cwd server test` 138/138, typecheck, oxlint and prettier clean.
+
+### Known issues / pending
+- **Not run against a real Ollama:** it is not installed on this machine. Checked live instead:
+  with `OLLAMA_URL` pointing at nothing, `POST /feedback` answered in 0.4 s with rule-based
+  feedback and stored `provider = rules`.
+- The quality of corrections from a 2B model is unknown until tried; switch models via `.env`.
+- Noticed (not changed): the rules score a 14-word, 8-second answer 0 with "I heard almost
+  nothing". The short-answer threshold may be too strict.
+
+### Next
+- ~~Part 3: cloud sync to my own server.~~ Done.
+
+## Milestone 5 (optional), Part 3: cloud sync to my own server (2026-11-18)
+
+### What is synced
+Shadowing attempts, minimal-pairs attempts, vocabulary card states, scenario answers and talk
+metadata. **Not synced:** audio files (they stay on the phone that recorded them), settings (MMKV),
+and the server's own Azure / feedback logs. "Cloud" = my NestJS server + PostgreSQL ($0).
+
+### Sync model
+- **Client ids:** every row gets a `sync_id` made on the device (`lower(hex(randomblob(16)))` in
+  SQL, no new library). Vocabulary uses `"<deckId>:<term>"`, the same on every install.
+  Uploading the same rows twice changes nothing (the server skips known ids).
+- **Vocabulary:** last write wins by `updatedAt` (set by SQLite on every review), on the server
+  and on the device.
+- **Download cursor:** each server table has an auto-increment `seq`; a vocabulary update gets a
+  new `seq`. The cursor (`"s12.p3.v40.a5.t1"`) is opaque to the app, so clocks never matter.
+- **Order:** upload everything pending (batches of 100 per kind) → download pages (200 per kind)
+  until `hasMore` is false → save the cursor and the last sync time. Each step is saved as it
+  goes, so a sync cut off half-way loses nothing.
+
+### Server (`server/src/sync/`)
+- Prisma tables `SyncedShadowingAttempt`, `SyncedPairAttempt`, `SyncedVocabularyState`,
+  `SyncedScenarioAnswer`, `SyncedTalk` (migration `add_sync`).
+- `POST /sync` (validated batch, max 200 rows per kind, returns `{ received }`) and
+  `GET /sync?since=` (returns `{ changes, cursor, hasMore }`). Both in Swagger (`/docs`), behind
+  the API key. JSON body limit raised to 2 MB for big uploads.
+- `SyncStore` interface: `PrismaSyncStore` (`createMany … skipDuplicates`, vocabulary via
+  `INSERT … ON CONFLICT DO UPDATE … WHERE newer`, all in one transaction) and
+  `InMemorySyncStore` (unit + e2e tests). Pure `parseCursor` / `formatCursor`.
+- Postman: a "Sync" folder (upload, upload again, download all, download since the cursor).
+
+### App
+- **SQLite migration v3** (append-only): `sync_id` (backfilled, unique index) + `synced` on
+  `attempts`, `pair_attempts`, `scenario_answers`, `talks`; `updated_at` + `synced_at` on
+  `review_state`; table `sync_meta` (cursor, last sync time).
+- The existing repositories only add `sync_id` / `updated_at` to their INSERTs (shared SQL
+  fragments in `services/db/syncSql.ts`); their interfaces and callers did not change.
+- **`features/sync` (new):** pure `selectUnsynced` and `mergeRemote`; `runSync` +
+  `createSyncRunner` (one sync at a time); `SqliteLocalSyncStore`; `RemoteSyncRepository`
+  (new `HttpClient.getJson`) or `UnavailableSyncRepository` (no server); `SyncStatusStore`
+  (one state for the app; failures become a status and never throw); `SyncRow`, `SyncOnLaunch`.
+- **When it runs:** once in the background after the app opens, and from **Settings → Backup →
+  Sync now**, which shows "Last sync: today, 13:30." / "Offline. Will try again later." / "Sync
+  needs the TechSpeak server" (release builds, no server yet).
+- Settings order is now Practice → Backup → Daily reminder → Model voice (the voice list is long).
+- A talk restored from the server has no audio, so `TalkCard` hides "Play".
+
+### How to restore on a fresh install (or a new phone)
+1. Server running with the same database (`docker compose up -d`, `yarn --cwd server start:dev`).
+2. Install the app (debug build), `adb reverse tcp:3000 tcp:3000`, open it.
+3. The launch sync downloads everything; progress, weak sounds, charts and talks come back.
+
+### Tests
+- Server: cursor; `SyncService` with the in-memory store (idempotent, cursor, LWW both ways,
+  paging, bad cursor); e2e `/sync` (401, full round trip, idempotent upload, LWW, six kinds of 400).
+- App: migration v3 on a real SQLite (old rows kept, unique ids, vocabulary stamped, unique
+  index, `sync_meta`); `selectUnsynced`; `mergeRemote`; `runSync` with two "phones" on real
+  SQLite and a fake server (fresh-install restore, idempotent re-run, LWW on both phones, review
+  during upload stays pending, offline then catch up, paging, one run at a time);
+  `describeSyncState`; `SyncRow` / `SyncOnLaunch` flows; `TalkCard` without audio; `getJson`.
+- `yarn test` 453/453, `yarn --cwd server test` 167/167, typecheck, lint, prettier clean;
+  Newman "Sync" folder 9/9.
+
+### Emulator check (done)
+- Launch sync uploaded the emulator's data: PostgreSQL had 19 pair attempts, 5 scenario answers,
+  1 talk (no shadowing attempts or vocabulary states existed locally).
+- **Restore:** `adb shell pm clear com.techspeak` → open → the same 19 / 5 / 1 rows came back,
+  marked as uploaded, the talk without audio. Progress showed the weak sounds and the WPM chart.
+- **Offline:** server stopped → "Sync now" showed "Offline. Will try again later." and minimal
+  pairs still worked.
+- The real Prisma store was also checked with curl: double upload stored one row; an older
+  vocabulary state was ignored; a newer one replaced it and appeared after the cursor.
+
+### Known issues / pending
+- **Android 16 "nearby devices" prompt after clearing app data:** this is
+  `ACCESS_LOCAL_NETWORK`, which the debug build needs to reach Metro. "Don't allow" → "Unable to
+  load script". Fix: allow it, or `adb shell pm grant com.techspeak android.permission.ACCESS_LOCAL_NETWORK`.
+- A server process started on 2026-11-17 (`node dist/main.js`, port 3000) is still the old
+  build without `/sync`. Restart it (`yarn --cwd server build` + start, or `start:dev`) before
+  using sync from the app.
+- No vocabulary states or shadowing attempts existed on the emulator, so those two kinds were
+  checked by tests and curl only.
+- Single user (the API key). Rows deleted on the phone are not deleted on the server (the app
+  never deletes rows today).
+- Release builds have no server URL yet, so sync shows "unavailable" there.
+- iOS: pending (Windows).
+
+### Next
+- Milestone 5 is complete. Possible later: sync settings (voice, goal, reminder), sync audio
+  for talks (file upload), an iOS reminder, a release server URL.

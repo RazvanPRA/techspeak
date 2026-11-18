@@ -8,6 +8,7 @@ import { type Env, validateEnv } from './config/env.schema.js';
 import { ContentModule } from './content/content.module.js';
 import { FeedbackModule } from './feedback/feedback.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { SyncModule } from './sync/sync.module.js';
 
 /** Requests per minute per client; Azure F0 allows 20 concurrent requests and ~5 audio hours a month. */
 const REQUESTS_PER_MINUTE = 30;
@@ -20,6 +21,7 @@ const REQUESTS_PER_MINUTE = 30;
     ContentModule,
     AssessmentModule,
     FeedbackModule,
+    SyncModule,
   ],
   providers: [
     // Order matters: authenticate first, then count the request.

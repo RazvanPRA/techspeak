@@ -47,3 +47,77 @@ model Feedback {
   body         Json
   createdAt    DateTime       @default(now())
 }
+
+// ---- Sync (milestone 5): a copy of the app's progress, so a fresh install can restore it. ----
+// `id` is made by the app, so uploading the same row twice changes nothing. `seq` grows on every
+// insert (and on every vocabulary update) and is the download cursor of GET /sync.
+
+/// One shadowing attempt (no audio).
+model SyncedShadowingAttempt {
+  id            String   @id
+  seq           Int      @unique @default(autoincrement())
+  deckId        String
+  sentenceIndex Int
+  score         Int
+  transcript    String
+  /// Per-word diff, as stored by the app.
+  words         Json
+  /// Azure sub-scores, null for on-device scoring.
+  details       Json?
+  createdAt     DateTime
+  receivedAt    DateTime @default(now())
+}
+
+/// One minimal-pairs attempt.
+model SyncedPairAttempt {
+  id         String   @id
+  seq        Int      @unique @default(autoincrement())
+  pairId     String
+  sound      String
+  mode       String
+  correct    Boolean
+  createdAt  DateTime
+  receivedAt DateTime @default(now())
+}
+
+/// The SM-2 state of one vocabulary card. Id = "<deckId>:<term>". Last write wins by updatedAt.
+model SyncedVocabularyState {
+  id          String   @id
+  seq         Int      @unique @default(autoincrement())
+  deckId      String
+  term        String
+  ease        Float
+  interval    Int
+  repetitions Int
+  dueAt       DateTime
+  lapses      Int
+  updatedAt   DateTime
+  receivedAt  DateTime @default(now())
+}
+
+/// One timed scenario answer (the app's record, not the server feedback log).
+model SyncedScenarioAnswer {
+  id              String   @id
+  seq             Int      @unique @default(autoincrement())
+  promptId        String
+  deckId          String
+  durationSeconds Float
+  wordsPerMinute  Int
+  fillers         Int
+  score           Int?
+  transcript      String
+  createdAt       DateTime
+  receivedAt      DateTime @default(now())
+}
+
+/// One talk-check recording's metadata (the audio stays on the phone).
+model SyncedTalk {
+  id              String   @id
+  seq             Int      @unique @default(autoincrement())
+  durationSeconds Float
+  transcript      String
+  wordsPerMinute  Int
+  fillers         Int
+  createdAt       DateTime
+  receivedAt      DateTime @default(now())
+}

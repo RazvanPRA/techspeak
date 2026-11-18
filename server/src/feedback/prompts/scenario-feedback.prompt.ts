@@ -1,6 +1,6 @@
-// PROMPTS.md Part B, kept verbatim for a future LLM-backed FeedbackProvider
-// (Claude API or a local model via Ollama). Not used while feedback is rule-based ($0).
-// Variables in {{double braces}} are filled in by that provider.
+// PROMPTS.md Part B, kept verbatim. Used by OllamaFeedbackProvider (a local model, $0) via
+// buildFeedbackMessages, which fills the {{double brace}} variables and asks the model for
+// "corrections" and "improvedAnswer" only (the rest stays rule-based).
 
 export const SCENARIO_FEEDBACK_PROMPT = `You are an English speaking coach for a senior software developer whose native
 language is Romanian. They are practising spoken technical English for interviews,

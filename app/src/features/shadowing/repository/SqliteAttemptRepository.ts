@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { SqlExecutor, SqlRow } from '@/services/db';
+import { NEW_SYNC_ID_SQL, type SqlExecutor, type SqlRow } from '@/services/db';
 import { AssessmentDetailsSchema, AttemptRowSchema, WordResultSchema } from '../model/schemas';
 import type { AttemptRecord } from '../model/types';
 import type { AttemptRepository } from './AttemptRepository';
@@ -22,11 +22,12 @@ function toRecord(row: SqlRow): AttemptRecord {
   };
 }
 
+
 export class SqliteAttemptRepository implements AttemptRepository {
   constructor(private readonly db: SqlExecutor) {}
 
   async save(record: AttemptRecord): Promise<void> {
-    await this.db.execute(`INSERT INTO attempts (${COLUMNS}) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [
+    await this.db.execute(`INSERT INTO attempts (${COLUMNS}, sync_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ${NEW_SYNC_ID_SQL})`, [
       record.deckId,
       record.sentenceIndex,
       record.score,

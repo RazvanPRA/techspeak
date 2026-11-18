@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { SqlExecutor, SqlRow } from '@/services/db';
+import { NOW_ISO_SQL, type SqlExecutor, type SqlRow } from '@/services/db';
 import { ReviewStateSchema } from '../model/schemas';
 import type { DeckId, ReviewState } from '../model/types';
 import type { VocabularyRepository } from './VocabularyRepository';
@@ -40,7 +40,7 @@ export class SqliteVocabularyRepository implements VocabularyRepository {
   }
 
   async saveReview(state: ReviewState): Promise<void> {
-    await this.db.execute(`INSERT OR REPLACE INTO review_state (${COLUMNS}) VALUES (?, ?, ?, ?, ?, ?, ?)`, [
+    await this.db.execute(`INSERT OR REPLACE INTO review_state (${COLUMNS}, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ${NOW_ISO_SQL})`, [
       state.deckId,
       state.term,
       state.ease,

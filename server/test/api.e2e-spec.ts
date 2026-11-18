@@ -2,6 +2,13 @@ import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { buildWav } from '../src/assessment/testing/build-wav.js';
 import { ScenarioFeedbackSchema } from '../src/feedback/feedback.schema.js';
+import {
+  emptyBatch,
+  fullBatch,
+  pairAttempt,
+  shadowingAttempt,
+  vocabularyState,
+} from '../src/sync/testing/sync-fixtures.js';
 import { API_KEY, createTestApp } from './create-test-app.js';
 
 let ctx: Awaited<ReturnType<typeof createTestApp>>;
@@ -146,5 +153,85 @@ describe('POST /feedback', () => {
       .set('x-api-key', API_KEY)
       .send({ ...feedbackBody, ...patch })
       .expect(400);
+  });
+});
+
+describe('/sync', () => {
+  const server = () => app.getHttpServer();
+  const upload = (body: object) =>
+    request(server()).post('/sync').set('x-api-key', API_KEY).send(body);
+  const download = (since?: string) =>
+    request(server())
+      .get('/sync')
+      .query(since === undefined ? {} : { since })
+      .set('x-api-key', API_KEY);
+
+  it.each([
+    ['POST', () => request(server()).post('/sync').send(fullBatch())],
+    ['GET', () => request(server()).get('/sync')],
+  ])('%s rejects a request without the API key', async (_method, send) => {
+    await send().expect(401);
+  });
+
+  it('uploads every kind of record and downloads it on a fresh install', async () => {
+    await upload(fullBatch()).expect(200, { received: 5 });
+    const res = await download().expect(200);
+    expect(res.body).toEqual({
+      changes: fullBatch(),
+      cursor: expect.stringMatching(/^s\d+\.p\d+\.v\d+\.a\d+\.t\d+$/),
+      hasMore: false,
+    });
+  });
+
+  it('is idempotent: the same upload twice stores nothing new', async () => {
+    await upload(fullBatch()).expect(200);
+    const { body: first } = await download().expect(200);
+    await upload(fullBatch()).expect(200);
+    expect((await download().expect(200)).body).toEqual(first);
+    const { body: after } = await download(first.cursor).expect(200);
+    expect(after.changes).toEqual(emptyBatch());
+  });
+
+  it('keeps the newest vocabulary state (last write wins)', async () => {
+    const newer = vocabularyState('2026-11-18T12:00:00.000Z', { interval: 6 });
+    const older = vocabularyState('2026-11-18T08:00:00.000Z', { interval: 1 });
+    await upload({ ...emptyBatch(), vocabularyStates: [newer] }).expect(200);
+    await upload({ ...emptyBatch(), vocabularyStates: [older] }).expect(200);
+    const { body } = await download().expect(200);
+    expect(body.changes.vocabularyStates).toEqual([newer]);
+  });
+
+  it.each([
+    ['a missing list', { talks: undefined }],
+    [
+      'a bad date',
+      { pairAttempts: [{ ...pairAttempt('p-1'), createdAt: 'yesterday' }] },
+    ],
+    [
+      'an unknown mode',
+      { pairAttempts: [{ ...pairAttempt('p-1'), mode: 'sing' }] },
+    ],
+    [
+      'an empty id',
+      { shadowingAttempts: [{ ...shadowingAttempt(''), id: '' }] },
+    ],
+    [
+      'an unknown field',
+      { pairAttempts: [{ ...pairAttempt('p-1'), secret: 1 }] },
+    ],
+    [
+      'too many rows',
+      {
+        pairAttempts: Array.from({ length: 201 }, (_, i) =>
+          pairAttempt(`p-${i}`),
+        ),
+      },
+    ],
+  ])('POST returns 400 for %s', async (_label, patch) => {
+    await upload({ ...fullBatch(), ...patch }).expect(400);
+  });
+
+  it('GET returns 400 for a malformed cursor', async () => {
+    await download('x9').expect(400);
   });
 });

@@ -20,6 +20,14 @@ import {
 } from '@/features/scenarios';
 import type { SessionDependencies } from '@/features/session';
 import {
+  createSyncRunner,
+  RemoteSyncRepository,
+  SqliteLocalSyncStore,
+  type SyncDependencies,
+  SyncStatusStore,
+  UnavailableSyncRepository,
+} from '@/features/sync';
+import {
   countMissedWords,
   SHADOWING_DECK_IDS,
   type ShadowingDependencies,
@@ -31,7 +39,7 @@ import {
   type VocabularyDependencies,
 } from '@/features/vocabulary';
 import { HttpClient } from '@/services/api';
-import { createLazyExecutor } from '@/services/db';
+import { createLazyExecutor, type SqlExecutor } from '@/services/db';
 import { openDatabase } from '@/services/db/openDatabase';
 import { NativeReminderRepository } from '@/services/reminders/NativeReminderRepository';
 import { defaultAliases } from '@/services/scoring';
@@ -44,6 +52,7 @@ import {
   RateScaledTtsRepository,
   type RecognizerRepository,
   SttDiffAssessor,
+  VoicedTtsRepository,
 } from '@/services/speech';
 import { AudioApiPlayerRepository } from '@/services/speech/repository/AudioApiPlayerRepository';
 import { AudioApiRecorderRepository } from '@/services/speech/repository/AudioApiRecorderRepository';
@@ -64,6 +73,7 @@ export type AppDependencies = {
   scenarios: ScenariosDependencies;
   session: SessionDependencies;
   progress: ProgressDependencies;
+  sync: SyncDependencies;
 };
 
 /** Azure (via the server) when there is one, always falling back to on-device scoring. */
@@ -78,16 +88,25 @@ function createServerBacked(http: HttpClient | null, recognizer: RecognizerRepos
   return { assessor, feedback };
 }
 
+/** Backup to my own server when there is one; otherwise sync reports "unavailable". */
+function createSync(db: SqlExecutor, http: HttpClient | null, clock: () => Date): SyncDependencies {
+  const local = new SqliteLocalSyncStore(db);
+  const remote = http ? new RemoteSyncRepository(http) : new UnavailableSyncRepository();
+  const run = createSyncRunner({ local, remote, clock });
+  return { status: new SyncStatusStore(run, () => local.readMeta()), clock };
+}
+
 // arch-exception: the composition root wires every feature; splitting it would hide the wiring.
 export function createDependencies(): AppDependencies {
   // One database, one settings store, one speech stack: shared by every feature.
   const db = createLazyExecutor(() => openDatabase());
   const settings = new KeyValueSettingsRepository(new MmkvKeyValueStore());
   const recognizer = new WhisperRecognizerRepository(new WhisperModelStore());
-  const tts = new RateScaledTtsRepository(
+  const rateScaledTts = new RateScaledTtsRepository(
     new NativeSpeechTtsRepository(),
     () => settings.get().speechRate,
   );
+  const tts = new VoicedTtsRepository(rateScaledTts, () => settings.get().voiceId);
   const speech = { tts, recorder: new AudioApiRecorderRepository(), recognizer };
   const player = new AudioApiPlayerRepository();
   const http = apiConfig ? new HttpClient(apiConfig) : null;
@@ -138,6 +157,7 @@ export function createDependencies(): AppDependencies {
     session: {
       settings,
       reminders: new NativeReminderRepository(),
+      tts: rateScaledTts, // the voice picker previews voices itself
       ...createSessionSources(progress, { decks, reviews }, clock),
       shadowingDeckIds: SHADOWING_DECK_IDS,
       promptIds: promptRepository.listGroups().flatMap(g => g.prompts.map(p => p.id)),
@@ -145,5 +165,6 @@ export function createDependencies(): AppDependencies {
       random: Math.random,
     },
     progress,
+    sync: createSync(db, http, clock),
   };
 }

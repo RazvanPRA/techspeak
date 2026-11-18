@@ -9,6 +9,8 @@ import { FakePronunciationClient } from '../src/assessment/testing/fake-pronunci
 import { InMemoryScenarioAnswerStore } from '../src/feedback/store/in-memory-scenario-answer.store.js';
 import { SCENARIO_ANSWER_STORE } from '../src/feedback/store/scenario-answer-store.js';
 import { PrismaService } from '../src/prisma/prisma.service.js';
+import { InMemorySyncStore } from '../src/sync/store/in-memory-sync.store.js';
+import { SYNC_STORE } from '../src/sync/store/sync-store.js';
 
 export const API_KEY = 'e2e-test-api-key-123';
 
@@ -17,6 +19,7 @@ export async function createTestApp() {
   const client = new FakePronunciationClient(88);
   const attempts = new InMemoryAttemptStore();
   const answers = new InMemoryScenarioAnswerStore();
+  const syncStore = new InMemorySyncStore();
   const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
     .overrideProvider(PRONUNCIATION_CLIENT)
     .useValue(client)
@@ -24,11 +27,13 @@ export async function createTestApp() {
     .useValue(attempts)
     .overrideProvider(SCENARIO_ANSWER_STORE)
     .useValue(answers)
+    .overrideProvider(SYNC_STORE)
+    .useValue(syncStore)
     .overrideProvider(PrismaService)
     .useValue({ $disconnect: async () => undefined })
     .compile();
   const app: INestApplication = moduleRef.createNestApplication();
   configureApp(app);
   await app.init();
-  return { app, client, attempts, answers };
+  return { app, client, attempts, answers, syncStore };
 }

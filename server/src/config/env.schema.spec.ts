@@ -42,6 +42,33 @@ describe('validateEnv', () => {
     );
   });
 
+  it('runs without Ollama by default, with the default model and timeout', () => {
+    const env = validateEnv({ ...valid, OLLAMA_URL: '', OLLAMA_MODEL: '' });
+    expect(env.OLLAMA_URL).toBeUndefined();
+    expect(env.OLLAMA_MODEL).toBe('qwen3.5:2b');
+    expect(env.OLLAMA_TIMEOUT_MS).toBe(12_000);
+  });
+
+  it('reads the Ollama settings and keeps the timeout under the app timeout', () => {
+    const env = validateEnv({
+      ...valid,
+      OLLAMA_URL: 'http://localhost:11434',
+      OLLAMA_MODEL: 'qwen3.5:0.8b',
+      OLLAMA_TIMEOUT_MS: '8000',
+    });
+    expect(env).toMatchObject({
+      OLLAMA_URL: 'http://localhost:11434',
+      OLLAMA_MODEL: 'qwen3.5:0.8b',
+      OLLAMA_TIMEOUT_MS: 8000,
+    });
+    expect(() => validateEnv({ ...valid, OLLAMA_TIMEOUT_MS: '20000' })).toThrow(
+      /OLLAMA_TIMEOUT_MS/,
+    );
+    expect(() => validateEnv({ ...valid, OLLAMA_URL: 'not a url' })).toThrow(
+      /OLLAMA_URL/,
+    );
+  });
+
   it('rejects an API key that is too short to be safe', () => {
     expect(() => validateEnv({ ...valid, API_KEY: 'short' })).toThrow(
       /API_KEY/,
