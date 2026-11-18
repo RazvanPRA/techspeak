@@ -1,4 +1,4 @@
-import type { SqlExecutor, SqlRow } from '@/services/db';
+import { NEW_SYNC_ID_SQL, type SqlExecutor, type SqlRow } from '@/services/db';
 import {
   ScenarioAnswerRecordSchema,
   type ScenarioAnswerRecord,
@@ -21,6 +21,7 @@ function toRecord(row: SqlRow): ScenarioAnswerRecord {
   });
 }
 
+
 export class SqliteScenarioAnswerRepository
   implements ScenarioAnswerRepository
 {
@@ -28,7 +29,7 @@ export class SqliteScenarioAnswerRepository
 
   async save(r: ScenarioAnswerRecord): Promise<void> {
     await this.db.execute(
-      `INSERT INTO scenario_answers (${COLUMNS}) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO scenario_answers (${COLUMNS}, sync_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ${NEW_SYNC_ID_SQL})`,
       [
         r.promptId,
         r.deckId,

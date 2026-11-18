@@ -7,9 +7,21 @@
   "auth": {
     "type": "apikey",
     "apikey": [
-      { "key": "key", "value": "x-api-key", "type": "string" },
-      { "key": "value", "value": "{{apiKey}}", "type": "string" },
-      { "key": "in", "value": "header", "type": "string" }
+      {
+        "key": "key",
+        "value": "x-api-key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
     ]
   },
   "item": [
@@ -34,9 +46,19 @@
             }
           ],
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/docs-json", "host": ["{{baseUrl}}"], "path": ["docs-json"] }
+            "url": {
+              "raw": "{{baseUrl}}/docs-json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "docs-json"
+              ]
+            }
           }
         }
       ]
@@ -75,12 +97,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"prompt\": \"How would you investigate a slow query?\",\n  \"deckId\": \"sql\",\n  \"transcript\": \"Um, first I would run explain analyze on the query to see the plan. If it does a sequential scan on a big table, I would basically add an index on the column in the where clause and check the plan again.\",\n  \"durationSeconds\": 25\n}"
             },
-            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+            "url": {
+              "raw": "{{baseUrl}}/feedback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "feedback"
+              ]
+            }
           }
         },
         {
@@ -102,12 +137,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"prompt\": \"How would you investigate a slow query?\",\n  \"deckId\": \"sql\",\n  \"transcript\": \"I would check the query plan first.\",\n  \"durationSeconds\": 4,\n  \"pronunciation\": [\n    { \"word\": \"query\", \"accuracy\": 48, \"phonemes\": [{ \"phoneme\": \"w\", \"accuracy\": 20 }] },\n    { \"word\": \"plan\", \"accuracy\": 95 }\n  ]\n}"
             },
-            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+            "url": {
+              "raw": "{{baseUrl}}/feedback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "feedback"
+              ]
+            }
           }
         },
         {
@@ -117,18 +165,33 @@
               "listen": "test",
               "script": {
                 "type": "text/javascript",
-                "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"]
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));"
+                ]
               }
             }
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"prompt\": \"Explain COBOL.\",\n  \"deckId\": \"cobol\",\n  \"transcript\": \"\",\n  \"durationSeconds\": 1\n}"
             },
-            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+            "url": {
+              "raw": "{{baseUrl}}/feedback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "feedback"
+              ]
+            }
           }
         },
         {
@@ -151,12 +214,25 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"deckId\": \"sql\",\n  \"transcript\": \"hello\",\n  \"durationSeconds\": -5\n}"
             },
-            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+            "url": {
+              "raw": "{{baseUrl}}/feedback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "feedback"
+              ]
+            }
           }
         },
         {
@@ -166,16 +242,36 @@
               "listen": "test",
               "script": {
                 "type": "text/javascript",
-                "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"]
+                "exec": [
+                  "pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"
+                ]
               }
             }
           ],
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{}" },
-            "url": { "raw": "{{baseUrl}}/feedback", "host": ["{{baseUrl}}"], "path": ["feedback"] }
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/feedback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "feedback"
+              ]
+            }
           }
         }
       ]
@@ -211,11 +307,27 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "referenceText", "value": "Think about the cache.", "type": "text" },
-                { "key": "audio", "type": "file", "src": "fixtures/tone-16k-mono.wav" }
+                {
+                  "key": "referenceText",
+                  "value": "Think about the cache.",
+                  "type": "text"
+                },
+                {
+                  "key": "audio",
+                  "type": "file",
+                  "src": "fixtures/tone-16k-mono.wav"
+                }
               ]
             },
-            "url": { "raw": "{{baseUrl}}/assessment", "host": ["{{baseUrl}}"], "path": ["assessment"] }
+            "url": {
+              "raw": "{{baseUrl}}/assessment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assessment"
+              ]
+            }
           }
         },
         {
@@ -225,7 +337,9 @@
               "listen": "test",
               "script": {
                 "type": "text/javascript",
-                "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"]
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));"
+                ]
               }
             }
           ],
@@ -233,12 +347,200 @@
             "method": "POST",
             "body": {
               "mode": "formdata",
-              "formdata": [{ "key": "referenceText", "value": "hello", "type": "text" }]
+              "formdata": [
+                {
+                  "key": "referenceText",
+                  "value": "hello",
+                  "type": "text"
+                }
+              ]
             },
-            "url": { "raw": "{{baseUrl}}/assessment", "host": ["{{baseUrl}}"], "path": ["assessment"] }
+            "url": {
+              "raw": "{{baseUrl}}/assessment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assessment"
+              ]
+            }
           }
         }
       ]
+    },
+    {
+      "name": "Sync",
+      "description": "Progress backup: upload (idempotent) and download since a cursor. Run the four requests in order.",
+      "item": [
+        {
+          "name": "Upload a batch",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// A fresh id prefix per run, reused by 'Upload the same batch again'.",
+                  "pm.collectionVariables.set('syncRunId', pm.variables.replaceIn('{{$guid}}'));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('received every row', () => pm.expect(pm.response.json().received).to.eql(5));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shadowingAttempts\": [\n    {\n      \"id\": \"{{syncRunId}}-s\",\n      \"deckId\": \"sql\",\n      \"sentenceIndex\": 0,\n      \"score\": 80,\n      \"transcript\": \"select star from users\",\n      \"words\": [\n        {\n          \"kind\": \"match\",\n          \"word\": \"select\"\n        }\n      ],\n      \"details\": null,\n      \"createdAt\": \"2026-11-18T09:00:00.000Z\"\n    }\n  ],\n  \"pairAttempts\": [\n    {\n      \"id\": \"{{syncRunId}}-p\",\n      \"pairId\": \"ship-sheep\",\n      \"sound\": \"ɪ-iː\",\n      \"mode\": \"listen\",\n      \"correct\": true,\n      \"createdAt\": \"2026-11-18T09:01:00.000Z\"\n    }\n  ],\n  \"vocabularyStates\": [\n    {\n      \"id\": \"postman-{{syncRunId}}:query\",\n      \"deckId\": \"postman\",\n      \"term\": \"query-{{syncRunId}}\",\n      \"ease\": 2.5,\n      \"interval\": 1,\n      \"repetitions\": 1,\n      \"dueAt\": \"2026-11-19T09:00:00.000Z\",\n      \"lapses\": 0,\n      \"updatedAt\": \"2026-11-18T09:02:00.000Z\"\n    }\n  ],\n  \"scenarioAnswers\": [\n    {\n      \"id\": \"{{syncRunId}}-a\",\n      \"promptId\": \"sql-1\",\n      \"deckId\": \"sql\",\n      \"durationSeconds\": 42.5,\n      \"wordsPerMinute\": 120,\n      \"fillers\": 2,\n      \"score\": null,\n      \"transcript\": \"I would add an index\",\n      \"createdAt\": \"2026-11-18T09:03:00.000Z\"\n    }\n  ],\n  \"talks\": [\n    {\n      \"id\": \"{{syncRunId}}-t\",\n      \"durationSeconds\": 180,\n      \"transcript\": \"Today I will talk about indexes\",\n      \"wordsPerMinute\": 130,\n      \"fillers\": 5,\n      \"createdAt\": \"2026-11-18T09:04:00.000Z\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sync",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sync"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload the same batch again (idempotent)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('accepted again without error', () => pm.expect(pm.response.json().received).to.eql(5));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shadowingAttempts\": [\n    {\n      \"id\": \"{{syncRunId}}-s\",\n      \"deckId\": \"sql\",\n      \"sentenceIndex\": 0,\n      \"score\": 80,\n      \"transcript\": \"select star from users\",\n      \"words\": [\n        {\n          \"kind\": \"match\",\n          \"word\": \"select\"\n        }\n      ],\n      \"details\": null,\n      \"createdAt\": \"2026-11-18T09:00:00.000Z\"\n    }\n  ],\n  \"pairAttempts\": [\n    {\n      \"id\": \"{{syncRunId}}-p\",\n      \"pairId\": \"ship-sheep\",\n      \"sound\": \"ɪ-iː\",\n      \"mode\": \"listen\",\n      \"correct\": true,\n      \"createdAt\": \"2026-11-18T09:01:00.000Z\"\n    }\n  ],\n  \"vocabularyStates\": [\n    {\n      \"id\": \"postman-{{syncRunId}}:query\",\n      \"deckId\": \"postman\",\n      \"term\": \"query-{{syncRunId}}\",\n      \"ease\": 2.5,\n      \"interval\": 1,\n      \"repetitions\": 1,\n      \"dueAt\": \"2026-11-19T09:00:00.000Z\",\n      \"lapses\": 0,\n      \"updatedAt\": \"2026-11-18T09:02:00.000Z\"\n    }\n  ],\n  \"scenarioAnswers\": [\n    {\n      \"id\": \"{{syncRunId}}-a\",\n      \"promptId\": \"sql-1\",\n      \"deckId\": \"sql\",\n      \"durationSeconds\": 42.5,\n      \"wordsPerMinute\": 120,\n      \"fillers\": 2,\n      \"score\": null,\n      \"transcript\": \"I would add an index\",\n      \"createdAt\": \"2026-11-18T09:03:00.000Z\"\n    }\n  ],\n  \"talks\": [\n    {\n      \"id\": \"{{syncRunId}}-t\",\n      \"durationSeconds\": 180,\n      \"transcript\": \"Today I will talk about indexes\",\n      \"wordsPerMinute\": 130,\n      \"fillers\": 5,\n      \"createdAt\": \"2026-11-18T09:04:00.000Z\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sync",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sync"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Download everything (fresh install)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "const run = pm.collectionVariables.get('syncRunId');",
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('each uploaded row is stored once', () => {",
+                  "  for (const kind of ['shadowingAttempts', 'pairAttempts', 'scenarioAnswers', 'talks']) {",
+                  "    pm.expect(body.changes[kind].filter(r => r.id.startsWith(run))).to.have.length(1);",
+                  "  }",
+                  "});",
+                  "pm.test('has a cursor', () => pm.expect(body.cursor).to.match(/^s[0-9]+[.]p[0-9]+[.]v[0-9]+[.]a[0-9]+[.]t[0-9]+$/));",
+                  "pm.collectionVariables.set('syncCursor', body.cursor);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sync",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sync"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Download since the cursor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('nothing new since the last download', () => {",
+                  "  for (const rows of Object.values(body.changes)) pm.expect(rows).to.eql([]);",
+                  "  pm.expect(body.hasMore).to.eql(false);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sync?since={{syncCursor}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sync"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "{{syncCursor}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "syncRunId",
+      "value": ""
+    },
+    {
+      "key": "syncCursor",
+      "value": ""
     }
   ]
 }

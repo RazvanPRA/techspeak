@@ -1,4 +1,4 @@
-import type { SqlExecutor, SqlRow } from '@/services/db';
+import { NEW_SYNC_ID_SQL, type SqlExecutor, type SqlRow } from '@/services/db';
 import { TalkRecordSchema, type TalkRecord } from '../model/records';
 import type { TalkRepository } from './TalkRepository';
 
@@ -15,11 +15,12 @@ function toRecord(row: SqlRow): TalkRecord {
   });
 }
 
+
 export class SqliteTalkRepository implements TalkRepository {
   constructor(private readonly db: SqlExecutor) {}
 
   async save(r: TalkRecord): Promise<void> {
-    await this.db.execute(`INSERT INTO talks (${COLUMNS}) VALUES (?, ?, ?, ?, ?, ?)`, [
+    await this.db.execute(`INSERT INTO talks (${COLUMNS}, sync_id) VALUES (?, ?, ?, ?, ?, ?, ${NEW_SYNC_ID_SQL})`, [
       r.audioPath,
       r.durationSeconds,
       r.transcript,

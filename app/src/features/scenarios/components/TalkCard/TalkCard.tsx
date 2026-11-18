@@ -11,7 +11,7 @@ export type TalkCardProps = {
   onPlay: (path: string) => void;
 };
 
-/** One recorded talk: when, how long, pace, fillers, and a play button. */
+/** One recorded talk: when, how long, pace, fillers, and a play button (if the audio is here). */
 function TalkCardComponent({ title, talk, onPlay }: TalkCardProps) {
   return (
     <TitledCard title={title}>
@@ -24,7 +24,10 @@ function TalkCardComponent({ title, talk, onPlay }: TalkCardProps) {
       <AppText>
         {t('talk.stats', { wpm: talk.wordsPerMinute, fillers: fillersPerMinute(talk) })}
       </AppText>
-      <Button label={t('talk.play')} variant="secondary" onPress={() => onPlay(talk.audioPath)} />
+      {/* A talk restored from the server has no audio (it stays on the phone that recorded it). */}
+      {talk.audioPath !== '' && (
+        <Button label={t('talk.play')} variant="secondary" onPress={() => onPlay(talk.audioPath)} />
+      )}
     </TitledCard>
   );
 }

@@ -4,3 +4,4 @@ export type { Migration, SqlExecutor, SqlRow, SqlValue } from './types';
 export { runMigrations } from './migrations';
 export { MIGRATIONS } from './schema';
 export { createLazyExecutor } from './createLazyExecutor';
+export { NEW_SYNC_ID_SQL, NOW_ISO_SQL } from './syncSql';

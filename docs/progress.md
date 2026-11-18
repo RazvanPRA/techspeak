@@ -425,4 +425,94 @@
   nothing". The short-answer threshold may be too strict.
 
 ### Next
-- Part 3: cloud sync to my own server.
+- ~~Part 3: cloud sync to my own server.~~ Done.
+
+## Milestone 5 (optional), Part 3: cloud sync to my own server (2026-11-18)
+
+### What is synced
+Shadowing attempts, minimal-pairs attempts, vocabulary card states, scenario answers and talk
+metadata. **Not synced:** audio files (they stay on the phone that recorded them), settings (MMKV),
+and the server's own Azure / feedback logs. "Cloud" = my NestJS server + PostgreSQL ($0).
+
+### Sync model
+- **Client ids:** every row gets a `sync_id` made on the device (`lower(hex(randomblob(16)))` in
+  SQL, no new library). Vocabulary uses `"<deckId>:<term>"`, the same on every install.
+  Uploading the same rows twice changes nothing (the server skips known ids).
+- **Vocabulary:** last write wins by `updatedAt` (set by SQLite on every review), on the server
+  and on the device.
+- **Download cursor:** each server table has an auto-increment `seq`; a vocabulary update gets a
+  new `seq`. The cursor (`"s12.p3.v40.a5.t1"`) is opaque to the app, so clocks never matter.
+- **Order:** upload everything pending (batches of 100 per kind) → download pages (200 per kind)
+  until `hasMore` is false → save the cursor and the last sync time. Each step is saved as it
+  goes, so a sync cut off half-way loses nothing.
+
+### Server (`server/src/sync/`)
+- Prisma tables `SyncedShadowingAttempt`, `SyncedPairAttempt`, `SyncedVocabularyState`,
+  `SyncedScenarioAnswer`, `SyncedTalk` (migration `add_sync`).
+- `POST /sync` (validated batch, max 200 rows per kind, returns `{ received }`) and
+  `GET /sync?since=` (returns `{ changes, cursor, hasMore }`). Both in Swagger (`/docs`), behind
+  the API key. JSON body limit raised to 2 MB for big uploads.
+- `SyncStore` interface: `PrismaSyncStore` (`createMany … skipDuplicates`, vocabulary via
+  `INSERT … ON CONFLICT DO UPDATE … WHERE newer`, all in one transaction) and
+  `InMemorySyncStore` (unit + e2e tests). Pure `parseCursor` / `formatCursor`.
+- Postman: a "Sync" folder (upload, upload again, download all, download since the cursor).
+
+### App
+- **SQLite migration v3** (append-only): `sync_id` (backfilled, unique index) + `synced` on
+  `attempts`, `pair_attempts`, `scenario_answers`, `talks`; `updated_at` + `synced_at` on
+  `review_state`; table `sync_meta` (cursor, last sync time).
+- The existing repositories only add `sync_id` / `updated_at` to their INSERTs (shared SQL
+  fragments in `services/db/syncSql.ts`); their interfaces and callers did not change.
+- **`features/sync` (new):** pure `selectUnsynced` and `mergeRemote`; `runSync` +
+  `createSyncRunner` (one sync at a time); `SqliteLocalSyncStore`; `RemoteSyncRepository`
+  (new `HttpClient.getJson`) or `UnavailableSyncRepository` (no server); `SyncStatusStore`
+  (one state for the app; failures become a status and never throw); `SyncRow`, `SyncOnLaunch`.
+- **When it runs:** once in the background after the app opens, and from **Settings → Backup →
+  Sync now**, which shows "Last sync: today, 13:30." / "Offline. Will try again later." / "Sync
+  needs the TechSpeak server" (release builds, no server yet).
+- Settings order is now Practice → Backup → Daily reminder → Model voice (the voice list is long).
+- A talk restored from the server has no audio, so `TalkCard` hides "Play".
+
+### How to restore on a fresh install (or a new phone)
+1. Server running with the same database (`docker compose up -d`, `yarn --cwd server start:dev`).
+2. Install the app (debug build), `adb reverse tcp:3000 tcp:3000`, open it.
+3. The launch sync downloads everything; progress, weak sounds, charts and talks come back.
+
+### Tests
+- Server: cursor; `SyncService` with the in-memory store (idempotent, cursor, LWW both ways,
+  paging, bad cursor); e2e `/sync` (401, full round trip, idempotent upload, LWW, six kinds of 400).
+- App: migration v3 on a real SQLite (old rows kept, unique ids, vocabulary stamped, unique
+  index, `sync_meta`); `selectUnsynced`; `mergeRemote`; `runSync` with two "phones" on real
+  SQLite and a fake server (fresh-install restore, idempotent re-run, LWW on both phones, review
+  during upload stays pending, offline then catch up, paging, one run at a time);
+  `describeSyncState`; `SyncRow` / `SyncOnLaunch` flows; `TalkCard` without audio; `getJson`.
+- `yarn test` 453/453, `yarn --cwd server test` 167/167, typecheck, lint, prettier clean;
+  Newman "Sync" folder 9/9.
+
+### Emulator check (done)
+- Launch sync uploaded the emulator's data: PostgreSQL had 19 pair attempts, 5 scenario answers,
+  1 talk (no shadowing attempts or vocabulary states existed locally).
+- **Restore:** `adb shell pm clear com.techspeak` → open → the same 19 / 5 / 1 rows came back,
+  marked as uploaded, the talk without audio. Progress showed the weak sounds and the WPM chart.
+- **Offline:** server stopped → "Sync now" showed "Offline. Will try again later." and minimal
+  pairs still worked.
+- The real Prisma store was also checked with curl: double upload stored one row; an older
+  vocabulary state was ignored; a newer one replaced it and appeared after the cursor.
+
+### Known issues / pending
+- **Android 16 "nearby devices" prompt after clearing app data:** this is
+  `ACCESS_LOCAL_NETWORK`, which the debug build needs to reach Metro. "Don't allow" → "Unable to
+  load script". Fix: allow it, or `adb shell pm grant com.techspeak android.permission.ACCESS_LOCAL_NETWORK`.
+- A server process started on 2026-11-17 (`node dist/main.js`, port 3000) is still the old
+  build without `/sync`. Restart it (`yarn --cwd server build` + start, or `start:dev`) before
+  using sync from the app.
+- No vocabulary states or shadowing attempts existed on the emulator, so those two kinds were
+  checked by tests and curl only.
+- Single user (the API key). Rows deleted on the phone are not deleted on the server (the app
+  never deletes rows today).
+- Release builds have no server URL yet, so sync shows "unavailable" there.
+- iOS: pending (Windows).
+
+### Next
+- Milestone 5 is complete. Possible later: sync settings (voice, goal, reminder), sync audio
+  for talks (file upload), an iOS reminder, a release server URL.

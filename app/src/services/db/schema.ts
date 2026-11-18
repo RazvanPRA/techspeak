@@ -65,4 +65,22 @@ export const MIGRATIONS: readonly Migration[] = [
       )`,
     ],
   },
+  {
+    version: 3,
+    statements: [
+      // Sync (milestone 5). Append-only rows: an id made on the device + "uploaded" flag.
+      ...['attempts', 'pair_attempts', 'scenario_answers', 'talks'].flatMap(table => [
+        `ALTER TABLE ${table} ADD COLUMN sync_id TEXT`,
+        `ALTER TABLE ${table} ADD COLUMN synced INTEGER NOT NULL DEFAULT 0`,
+        `UPDATE ${table} SET sync_id = lower(hex(randomblob(16))) WHERE sync_id IS NULL`,
+        `CREATE UNIQUE INDEX ${table}_sync_id ON ${table} (sync_id)`,
+      ]),
+      // Vocabulary: last write wins. Pending while synced_at is null or older than updated_at.
+      'ALTER TABLE review_state ADD COLUMN updated_at TEXT',
+      'ALTER TABLE review_state ADD COLUMN synced_at TEXT',
+      "UPDATE review_state SET updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')",
+      // The download cursor and the last sync time.
+      'CREATE TABLE sync_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)',
+    ],
+  },
 ];

@@ -11,6 +11,12 @@ type Options = ApiConfig & {
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 
+type SendInit = {
+  method?: 'GET' | 'POST';
+  body?: string | FormData;
+  headers: Record<string, string>;
+};
+
 const messageOf = (body: unknown): string | null => {
   const message = (body as { message?: unknown } | null)?.message;
   if (typeof message === 'string') return message;
@@ -34,11 +40,11 @@ export class HttpClient {
     return this.send(path, { body: form, headers: { Accept: 'application/json' } }, schema);
   }
 
-  private async send<T>(
-    path: string,
-    init: { body: string | FormData; headers: Record<string, string> },
-    schema: z.ZodType<T>,
-  ): Promise<T> {
+  getJson<T>(path: string, schema: z.ZodType<T>): Promise<T> {
+    return this.send(path, { method: 'GET', headers: { Accept: 'application/json' } }, schema);
+  }
+
+  private async send<T>(path: string, init: SendInit, schema: z.ZodType<T>): Promise<T> {
     const response = await this.request(path, init);
     const body: unknown = await response.json().catch(() => null);
     if (!response.ok) {
@@ -49,13 +55,13 @@ export class HttpClient {
     return parsed.data;
   }
 
-  private async request(path: string, init: { body: string | FormData; headers: Record<string, string> }) {
+  private async request(path: string, init: SendInit) {
     const { baseUrl, apiKey, timeoutMs = DEFAULT_TIMEOUT_MS } = this.options;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       return await this.fetchFn(`${baseUrl.replace(/\/+$/, '')}${path}`, {
-        method: 'POST',
+        method: init.method ?? 'POST',
         body: init.body,
         headers: { 'x-api-key': apiKey, ...init.headers },
         signal: controller.signal,

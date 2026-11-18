@@ -191,6 +191,18 @@ export const en = {
     voiceOnline: '{language} · needs internet',
     voicePreviewSentence: "Let's walk through the pull request before the standup.",
   },
+  sync: {
+    section: 'Backup',
+    syncNow: 'Sync now',
+    syncing: 'Syncing…',
+    never: 'Not synced yet.',
+    lastSync: 'Last sync: {when}.',
+    today: 'today, {time}',
+    onDay: '{day} {month}, {time}',
+    offline: 'Offline. Will try again later.',
+    unavailable: 'Sync needs the TechSpeak server (debug builds for now).',
+    failed: 'Sync failed: {reason}.',
+  },
   progress: {
     title: 'Progress',
     loading: 'Loading your progress…',

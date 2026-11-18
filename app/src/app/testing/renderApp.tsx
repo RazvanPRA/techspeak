@@ -14,6 +14,7 @@ import {
   UnavailableFeedbackRepository,
 } from '@/features/scenarios';
 import { InMemoryAttemptRepository } from '@/features/shadowing';
+import { createTestSyncDependencies } from '@/features/sync';
 import { InMemoryVocabularyRepository, SeedDeckRepository } from '@/features/vocabulary';
 import { InMemoryReminderRepository } from '@/services/reminders';
 import { defaultAliases } from '@/services/scoring';
@@ -97,6 +98,7 @@ export function createTestDependencies(): AppDependencies {
       random: () => 0,
     },
     progress,
+    sync: createTestSyncDependencies(clock),
   };
 }
 

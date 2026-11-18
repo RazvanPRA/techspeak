@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { createTestSyncDependencies, SyncDependenciesProvider } from '@/features/sync';
 import { InMemoryReminderRepository } from '@/services/reminders';
 import { InMemoryKeyValueStore, KeyValueSettingsRepository } from '@/services/settings';
 import type { TtsVoice } from '@/services/speech';
@@ -31,7 +32,9 @@ async function setup(tts = new FakeTtsRepository(VOICES)) {
   };
   await render(
     <SessionDependenciesProvider value={deps}>
-      <SettingsScreen />
+      <SyncDependenciesProvider value={createTestSyncDependencies(deps.clock)}>
+        <SettingsScreen />
+      </SyncDependenciesProvider>
     </SessionDependenciesProvider>,
   );
   return { settings, tts };
