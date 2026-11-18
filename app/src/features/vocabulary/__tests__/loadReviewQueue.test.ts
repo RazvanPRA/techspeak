@@ -1,6 +1,7 @@
 import { seedDecks } from '@/content/decks';
 import { InMemoryVocabularyRepository } from '../repository/InMemoryVocabularyRepository';
 import { SeedDeckRepository } from '../repository/SeedDeckRepository';
+import { countReviewCards } from '../services/countReviewCards.service';
 import { loadReviewQueue } from '../services/loadReviewQueue.service';
 import { makeState } from '../testing/fixtures';
 
@@ -32,5 +33,22 @@ describe('loadReviewQueue', () => {
     const weak = [makeState('go', 'goroutine', { lapses: 2 })];
     const cards = await loadReviewQueue(sources([['column', 3]], weak), { kind: 'weak' }, now);
     expect(cards.map(c => c.term.term)).toEqual(['column', 'goroutine']);
+  });
+});
+
+describe('countReviewCards', () => {
+  it('counts the cards a review of every deck would show, within the session cap', async () => {
+    const count = await countReviewCards(sources(), now);
+    expect(count).toBeGreaterThan(0);
+    expect(count).toBeLessThanOrEqual(20);
+  });
+
+  it('is 0 when every term is reviewed and none is due', async () => {
+    const sql = decks.getDeck('sql');
+    if (!sql) throw new Error('The sql deck is missing');
+    const one = new SeedDeckRepository([sql]);
+    const states = sql.terms.map(t => makeState('sql', t.term, { dueAt: '2027-01-01T00:00:00.000Z' }));
+    const reviews = new InMemoryVocabularyRepository(states);
+    expect(await countReviewCards({ decks: one, reviews }, now)).toBe(0);
   });
 });

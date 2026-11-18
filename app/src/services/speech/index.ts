@@ -12,6 +12,7 @@ export type {
   PronunciationAssessor,
   RecognizerRepository,
   RecorderRepository,
+  RecordingArchive,
   RecordPhase,
   ScoredWord,
   SpeakOptions,
@@ -21,6 +22,7 @@ export type {
 export { SttDiffAssessor } from './assessor/SttDiffAssessor';
 export { AzurePronunciationAssessor } from './assessor/AzurePronunciationAssessor';
 export { FallbackAssessor } from './assessor/FallbackAssessor';
+export { RateScaledTtsRepository } from './repository/RateScaledTtsRepository';
 export { useHoldToRecord } from './hooks/useHoldToRecord';
 export { useMicPermission } from './hooks/useMicPermission';
 export { useSpeak } from './hooks/useSpeak';

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Grade, ReviewCard } from '../model/types';
+import type { Grade, ReviewCard, ReviewSelection } from '../model/types';
 import { useVocabularyDependencies } from '../dependencies/VocabularyDependencies';
 import { gradeCard } from '../services/gradeCard.service';
 import { loadReviewQueue } from '../services/loadReviewQueue.service';
@@ -8,10 +8,11 @@ import { useVocabularySelector } from '../state/hooks';
 
 export type QueueStatus = 'loading' | 'ready' | 'error';
 
-/** Loads the session's cards for the current selection and saves each graded card. */
-export function useReviewQueue() {
+/** Loads the cards for the selection (the stored one unless given) and saves each graded card. */
+export function useReviewQueue(override?: ReviewSelection) {
   const { decks, reviews, missedWords, clock } = useVocabularyDependencies();
-  const selection = useVocabularySelector(selectSelection);
+  const stored = useVocabularySelector(selectSelection);
+  const selection = override ?? stored;
   const [cards, setCards] = useState<ReviewCard[]>([]);
   const [index, setIndex] = useState(0);
   const [status, setStatus] = useState<QueueStatus>('loading');

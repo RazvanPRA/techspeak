@@ -38,4 +38,31 @@ export const MIGRATIONS: readonly Migration[] = [
       'CREATE INDEX pair_attempts_sound ON pair_attempts (sound)',
     ],
   },
+  {
+    version: 2,
+    statements: [
+      // Azure sub-scores and phoneme scores of a shadowing attempt (null for on-device scoring).
+      'ALTER TABLE attempts ADD COLUMN details_json TEXT',
+      `CREATE TABLE scenario_answers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        prompt_id TEXT NOT NULL,
+        deck_id TEXT NOT NULL,
+        duration_s REAL NOT NULL,
+        wpm INTEGER NOT NULL,
+        fillers INTEGER NOT NULL,
+        score INTEGER,
+        transcript TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      )`,
+      `CREATE TABLE talks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        audio_path TEXT NOT NULL,
+        duration_s REAL NOT NULL,
+        transcript TEXT NOT NULL,
+        wpm INTEGER NOT NULL,
+        fillers INTEGER NOT NULL,
+        created_at TEXT NOT NULL
+      )`,
+    ],
+  },
 ];

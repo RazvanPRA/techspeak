@@ -5,6 +5,7 @@ import type {
   PronunciationAssessor,
   PlayerRepository,
   RecognizerRepository,
+  RecordingArchive,
   RecorderRepository,
   SpeakOptions,
   TtsRepository,
@@ -64,5 +65,12 @@ export class FakeRecognizerRepository implements RecognizerRepository {
   async transcribe(path: string, hints: readonly string[] = []): Promise<string> {
     this.calls.push({ path, hints });
     return this.transcript;
+  }
+}
+
+/** "Keeps" a recording by prefixing its path, so tests can see that it was archived. */
+export class FakeRecordingArchive implements RecordingArchive {
+  async keep(path: string): Promise<string> {
+    return `/kept${path}`;
   }
 }

@@ -7,8 +7,11 @@ import { ListenPickPanel } from '../components/ListenPickPanel';
 import { SayItPanel } from '../components/SayItPanel';
 import { useMinimalPairsScreen } from '../hooks/useMinimalPairsScreen';
 
-export function MinimalPairsScreen() {
-  const s = useMinimalPairsScreen();
+export type MinimalPairsScreenProps = { focusSound?: string | null };
+
+/** Listen-and-pick / say-it drills; the daily session passes the weakest sound as focus. */
+export function MinimalPairsScreen({ focusSound }: MinimalPairsScreenProps) {
+  const s = useMinimalPairsScreen(focusSound);
   const panelProps = { round: s.round, onResult: s.onResult, onNext: s.next };
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>

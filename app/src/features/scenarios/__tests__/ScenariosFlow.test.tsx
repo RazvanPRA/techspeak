@@ -1,43 +1,18 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
-import { seedDecks } from '@/content/decks';
-import prompts from '@/content/prompts.json';
-import { SeedDeckRepository } from '@/features/vocabulary';
+import { fireEvent, screen } from '@testing-library/react-native';
 import {
-  FakeRecognizerRepository,
-  FakeRecorderRepository,
-} from '@/services/speech/testing/fakes';
-import {
-  ScenariosDependenciesProvider,
-  type ScenariosDependencies,
-} from '../dependencies/ScenariosDependencies';
-import { ScenariosNavigator } from '../navigation/ScenariosNavigator';
-import { SeedPromptRepository } from '../repository/SeedPromptRepository';
+  fakeScenariosDependencies,
+  renderScenarios,
+  waitSeconds as wait,
+} from '../testing/renderScenarios';
 import { FakeFeedbackRepository, sampleFeedback } from '../testing/fixtures';
 
 const PROMPT = 'How would you investigate a slow query?';
 const ANSWER = 'Um, first I would run explain analyze on the query and check the index.';
 
 async function setup(feedback = new FakeFeedbackRepository()) {
-  const recognizer = new FakeRecognizerRepository(ANSWER);
-  const recorder = new FakeRecorderRepository('/answer.wav');
-  const deps: ScenariosDependencies = {
-    prompts: new SeedPromptRepository(prompts),
-    feedback,
-    decks: new SeedDeckRepository(seedDecks),
-    recorder,
-    recognizer,
-    clock: () => new Date(),
-  };
-  await render(
-    <ScenariosDependenciesProvider value={deps}>
-      <NavigationContainer>
-        <ScenariosNavigator />
-      </NavigationContainer>
-    </ScenariosDependenciesProvider>,
-  );
-  return { feedback, recognizer, recorder };
+  const deps = { ...fakeScenariosDependencies(ANSWER), feedback };
+  await renderScenarios(deps);
+  return deps;
 }
 
 async function openPromptAndStart() {
@@ -45,18 +20,12 @@ async function openPromptAndStart() {
   await fireEvent.press(await screen.findByRole('button', { name: 'Start answering' }));
 }
 
-async function wait(seconds: number) {
-  await act(async () => {
-    jest.advanceTimersByTime(seconds * 1000);
-  });
-}
-
 beforeEach(() => jest.useFakeTimers({ now: new Date('2026-11-17T10:00:00Z') }));
 afterEach(() => jest.useRealTimers());
 
 describe('Scenarios', () => {
   it('times the answer, sends the transcript and shows the feedback', async () => {
-    const { feedback, recognizer, recorder } = await setup();
+    const { feedback, recognizer, recorder, answers } = await setup();
     await openPromptAndStart();
     expect(recorder.isRecording).toBe(true);
     expect(screen.getByText('Keep going: aim for at least 1 minute.')).toBeOnTheScreen();
@@ -78,6 +47,9 @@ describe('Scenarios', () => {
     expect(screen.getByText('Try next time: transaction')).toBeOnTheScreen();
     expect(screen.getByText('“Add an index on the foreign key.”')).toBeOnTheScreen();
     expect(screen.queryByTestId('better-way')).toBeNull();
+    expect(answers.records).toEqual([
+      expect.objectContaining({ promptId: 'sql-2', score: 72, wordsPerMinute: 128, fillers: 2 }),
+    ]);
   });
 
   it('stops by itself at two minutes', async () => {

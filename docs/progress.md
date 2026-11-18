@@ -5,7 +5,7 @@
 | 1. Scaffold + shadowing MVP | 1–3 | Code done; Android device test pending |
 | 2. Vocabulary (SM-2) + minimal pairs | 4–10 | Code done, Android build green; emulator test pending ([plan](plans/milestone-2.md)) |
 | 3. Backend, Azure scoring, scenarios | 11–18 | Code done, server + Postman green, emulator flow checked; real Azure call pending a key ([plan](plans/milestone-3.md)) |
-| 4. Daily session, progress, mock interview | 19–28 | Not started ([plan](plans/milestone-4.md)) |
+| 4. Daily session, progress, mock interview | 19–28 | Code done, Android build green, emulator checked (session, streak, reminder, progress, interview); day-28 talk to record on a phone ([plan](plans/milestone-4.md)) |
 
 ## Milestone 1 (2026-11-17)
 
@@ -217,3 +217,114 @@
   `wordsPerMinute` from scenarios' public API), mock interview.
 - Optional: an `LLMFeedbackProvider` (Ollama, free and local) to fill `corrections` and
   `improvedAnswer`; a shared `@techspeak/text` package for normalisation; `GET /attempts` for progress.
+
+## Milestone 4 (2026-11-18)
+
+### Built
+- **Today tab (`features/session`, new, first tab):** streak card, the plan for today, Start, Settings.
+  - Pure `buildDailySession(dueCount, weakSounds, config)` with `splitMinutes` (largest remainder,
+    ≥ 1 min per block). The default is 3 min pairs → 7 shadowing → 5 vocabulary → 3 scenario. Pairs
+    drill the weakest sound. With no due cards, the vocabulary time goes to shadowing; with no
+    prompts, the scenario time does.
+  - `SessionRunScreen`: block header with a timer ("Time is up" is a hint and never forces anything)
+    and Next / Skip / Finish. Below it, the feature's own drill.
+  - Summary screen: what was done or skipped, time spent, streak.
+- **Session steps, exported from each feature's `index.ts`:**
+  - `MinimalPairsSessionStep` (new `focusSound` → `pairsForSound`)
+  - `ShadowingSessionStep` (selects the planned deck)
+  - `VocabularySessionStep` (`ReviewScreen` takes an optional selection: every deck)
+  - `ScenarioSessionStep` (answer, then feedback in place via the extracted `FeedbackView`)
+- **Streak:**
+  - Pure `updateStreak` / `currentStreak`, using local calendar days and UTC day maths (DST-safe).
+  - It counts only when at least one block was done.
+- **Settings (`services/settings`):**
+  - `KeyValueSettingsRepository` on a `KeyValueStore`: MMKV in the app, a Map in tests.
+  - One zod-checked JSON value. Missing fields get defaults; corrupt data is reset.
+  - `useSettings` uses `useSyncExternalStore`.
+  - Settings screen: model voice speed 0.5–1.0, daily goal 5–60 min, reminder on/off + time.
+  - The speed applies everywhere through `RateScaledTtsRepository`, a TTS decorator wired in
+    `dependencies.ts`, with no feature changes.
+- **Daily reminder (`services/reminders`):**
+  - `ReminderRepository` → `NativeReminderRepository`.
+  - The app's own **Kotlin TurboModule** `DailyReminder` (codegen spec in
+    `src/services/reminders/native/`), built from:
+    - `ReminderScheduler`: SharedPreferences + `AlarmManager.setWindow`; no exact-alarm permission
+      needed.
+    - `ReminderReceiver`: shows the notification, re-arms tomorrow's alarm, and re-arms after a
+      reboot.
+    - `DailyReminderPackage`, registered in `MainApplication`.
+  - Android 13+ `POST_NOTIFICATIONS` is asked with `PermissionsAndroid`.
+- **Progress tab (`features/progress`, new):**
+  - Pure services: `averageScoreByDay`, `averageScoreByDeck`, `countMasteredWords` (interval
+    ≥ 21 d), `rankWeakSounds` (pair mistakes + Azure phonemes < 60 through `phonemeToSound`; needs
+    3 samples), `fluencyTrend` (WPM and fillers per minute per day), `loadProgress` /
+    `loadWeakSounds`.
+  - Charts in `src/components/charts`: `LineChart`, `BarChart`, `scalePoints`, on `react-native-svg`.
+    Each is one accessible image whose label reads out every point.
+  - It reloads on tab focus.
+- **Mock interview (scenarios):**
+  - Pure `pickInterviewPrompts`: Fisher–Yates with an injected rng, chosen decks first, topped up
+    from the others.
+  - Interview setup (choose decks) → 5 timed answers → summary.
+  - Pure `summarizeInterview` ranks the top 3 issues ($0, no LLM): short answers, filler rate,
+    pace outside 110–170, repeated mispronounced words, missed key terms.
+- **Talk check (day-28 check, scenarios):**
+  - Records a 3-minute talk and copies the WAV out of the cache with `FsRecordingArchive`.
+  - The first talk is the baseline. Later talks show next to it with Play buttons and WPM / filler
+    deltas (`compareTalks`).
+- **Storage (SQLite migration v2):**
+  - `attempts.details_json`: Azure scores, now persisted.
+  - `scenario_answers`: every answer, saved even when the server is unreachable.
+  - `talks`.
+- **Cross-feature data** goes through public APIs only, mapped in `src/app/crossFeatureSources.ts`
+  (`createProgressSources`, `createSessionSources`).
+- **UI primitive:** `Stepper` (−/+ with disabled ends). **Shared utils:** `toLocalDay`, and
+  `formatDuration` (moved out of scenarios).
+- **Tests:** 404 Jest tests in 58 suites:
+  - app-level `DailySession` / `RootTabs` flows, `InterviewAndTalkFlow`
+  - repository tests on real SQLite
+  - chart and Stepper render tests
+
+  Typecheck and lint are clean. The server is unchanged.
+
+### Libraries (app)
+`react-native-mmkv` 4.3.2 + `react-native-nitro-modules` 0.37.2 (Nitro, New Architecture),
+`react-native-svg` 15.16.1. No Expo packages. The Android build is green
+(`assembleDebug -PreactNativeArchitectures=x86_64`, 6 min). iOS pods are pending (needs a Mac).
+
+### Decisions
+- **No Notifee:** `@notifee/react-native` was archived in April 2026 (last release Dec 2024). Its
+  maintained fork `react-native-notify-kit` depends on `@expo/image-utils` and has an `expo` peer,
+  which breaks the "No Expo" rule. We wrote our own ~150-line Kotlin TurboModule instead (your
+  choice).
+- **Inexact alarm (`setWindow`):** this needs no `SCHEDULE_EXACT_ALARM` permission. Android may
+  deliver the reminder up to 10 minutes late, which is fine for a daily reminder.
+- **Pace range 110–170 wpm** in the interview summary (the plan said 120–160), so it agrees with the
+  Fluency card and the server.
+- **Blocks are time-boxed but never forced:** time up → a hint. Next = done, Skip = not done.
+- **The streak needs at least one done block.** "Skip everything" does not count.
+- **Voice picker left out:** only the speed setting was built. No voice list existed to choose from.
+- **Day-1 talk:** no recording existed, so the first talk check is the baseline.
+
+### Known issues / pending
+- **Emulator checks:**
+  - **Done:** Today → full session (4 blocks) → summary, streak 1. The reminder permission dialog
+    appeared, the alarm fired at the set minute ("Time to practise English") and re-armed for the
+    next day. Progress shows weakest sounds from the drills and the WPM / filler charts (SVG). A
+    5-question mock interview ran end to end with server feedback. The talk check auto-stopped at
+    3:00, saved the baseline and copied the WAV to `files/talks/`. The baseline card showed the UTC
+    date, which is now fixed to the local day.
+  - **Still to do:** the emulator mic records silence, so do a real spoken session, interview and
+    the day-1 talk on a phone. The shadowing charts fill once attempts are scored.
+- **Emulator app data was reset** before this check (fresh database and Whisper re-download), so the
+  charts started from new data rather than milestones 1–3.
+- **iOS:** pods (mmkv, nitro, svg) and an iOS version of the reminder module are pending (needs a
+  Mac). `NativeReminderRepository` throws a clear error when the module is missing.
+- **`en.ts` is 240 lines:** marked `arch-exception` (a strings dictionary); split it per feature if it
+  grows.
+- Same as before: a real Azure call is still untested (no key); Node 24.13 `.yarnrc`.
+
+### Next
+- Record the day-1 baseline talk on a phone now; record the day-28 talk on 2026-12-16 and compare.
+- Optional: a voice picker (`tts.listVoices`), an iOS reminder (UNUserNotificationCenter), an
+  `LLMFeedbackProvider` (Ollama) for corrections, cloud sync / `GET /attempts`.

@@ -1,5 +1,7 @@
 // Public API of the shadowing feature. Other modules import only from here.
 export { ShadowingNavigator } from './navigation/ShadowingNavigator';
+export { ShadowingSessionStep } from './components/ShadowingSessionStep';
+export { SHADOWING_DECK_IDS } from './model/constants';
 export type { ShadowingStackParamList } from './navigation/types';
 export {
   ShadowingDependenciesProvider,

@@ -1,5 +1,8 @@
 // Public API of the minimal-pairs feature. Other modules import only from here.
 export { MinimalPairsNavigator } from './navigation/MinimalPairsNavigator';
+/** The daily session's pairs block: the drill screen, focused on one sound. */
+export { MinimalPairsScreen as MinimalPairsSessionStep } from './screens/MinimalPairsScreen';
+export { SOUNDS } from './model/schemas';
 export type { MinimalPairsStackParamList } from './navigation/types';
 export {
   MinimalPairsDependenciesProvider,

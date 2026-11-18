@@ -15,6 +15,10 @@ export function PromptListScreen({ navigation }: Props) {
   const groups = prompts.listGroups();
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+      <View style={styles.group}>
+        <ActionRow label={t('interview.entry')} onPress={() => navigation.navigate('InterviewSetup')} />
+        <ActionRow label={t('talk.entry')} onPress={() => navigation.navigate('TalkCheck')} />
+      </View>
       <AppText variant="muted">{t('scenarios.listHint')}</AppText>
       {groups.map(group => (
         <View key={group.deckId + group.topic} style={styles.group}>

@@ -7,6 +7,7 @@ import { theme } from '@/shared/theme';
 import { ReviewActions } from '../components/ReviewActions';
 import { TermCard } from '../components/TermCard';
 import { useReviewScreen } from '../hooks/useReviewScreen';
+import type { ReviewSelection } from '../model/types';
 
 function statusMessage(status: string, total: number): string {
   if (status === 'loading') return t('vocabulary.loading');
@@ -14,8 +15,11 @@ function statusMessage(status: string, total: number): string {
   return total === 0 ? t('vocabulary.empty') : t('vocabulary.done', { count: total });
 }
 
-export function ReviewScreen() {
-  const s = useReviewScreen();
+export type ReviewScreenProps = { selection?: ReviewSelection };
+
+/** Say each card aloud; the daily session passes its own selection (every deck). */
+export function ReviewScreen({ selection }: ReviewScreenProps) {
+  const s = useReviewScreen(selection);
   const { status, current, index, total } = s.queue;
 
   if (status !== 'ready' || !current) return <EmptyState message={statusMessage(status, total)} />;

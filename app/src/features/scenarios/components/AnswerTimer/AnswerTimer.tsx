@@ -4,7 +4,7 @@ import { AppText } from '@/components/ui';
 import { t } from '@/shared/i18n';
 import { theme } from '@/shared/theme';
 import { MAX_ANSWER_SECONDS, MIN_ANSWER_SECONDS } from '../../model/constants';
-import { formatDuration } from '../../services/formatDuration.service';
+import { formatDuration } from '@/shared/utils';
 
 export type AnswerTimerProps = { elapsed: number };
 
