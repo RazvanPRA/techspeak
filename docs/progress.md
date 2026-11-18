@@ -366,4 +366,63 @@
 - `en.ts` is now 250 lines (still the `arch-exception` strings dictionary).
 
 ### Next
-- Part 2: `OllamaFeedbackProvider` (server only). Part 3: cloud sync to my own server.
+- ~~Part 2: `OllamaFeedbackProvider` (server only).~~ Done. Part 3: cloud sync to my own server.
+
+## Milestone 5 (optional), Part 2: Ollama grammar feedback (2026-11-18)
+
+### Built (server only; the app did not change)
+- **`OllamaFeedbackProvider`** (`server/src/feedback/providers/`): runs `RuleBasedFeedbackProvider`
+  and a local Ollama model **at the same time**. The model fills only `corrections` and
+  `improvedAnswer`; score, fluency, pronunciation, phrases and vocabulary stay rule-based, so a bad
+  model answer cannot change them. The merged result is validated with `ScenarioFeedbackSchema`.
+- **Fallback to the rules** when Ollama is off, slower than `OLLAMA_TIMEOUT_MS` (the request is
+  aborted), returns invalid JSON, or returns JSON of the wrong shape. Logged as a warning; the
+  request never fails because of the model. An empty transcript skips the model.
+- **Which provider answered is stored:** `FeedbackProvider.review()` now returns
+  `{ feedback, provider }`, and `Feedback.provider` holds `"ollama:qwen3.5:2b"` or `"rules"`.
+- **Prompt:** the Part B system prompt (`scenario-feedback.prompt.ts`) with its `{{variables}}`
+  filled (`buildFeedbackMessages`, pure), plus one paragraph asking only for the two fields. The
+  transcript is the user message.
+- **Ollama API** (`POST /api/chat`, docs.ollama.com/api/chat): `stream: false`, `think: false`,
+  `format` = the JSON Schema of the two fields (structured outputs, from zod via
+  `z.toJSONSchema`), `temperature 0.2`, `num_predict 700`, `keep_alive 30m` (no reload per answer).
+  `FetchOllamaClient` uses Node's `fetch`; tests use a fake client.
+- **Chosen in `FeedbackModule` only:** `OLLAMA_URL` set → Ollama + rules, unset → rules only.
+- **Env:** `OLLAMA_URL` (optional), `OLLAMA_MODEL` (default `qwen3.5:2b`), `OLLAMA_TIMEOUT_MS`
+  (default 12000, max 13000 because the app gives up after 15 s).
+- No new npm packages.
+
+### Model choice
+- **`qwen3.5:2b`** (~2.7 GB, free, thinking turned off): small enough for a CPU inside the 12 s
+  budget. On a slow CPU use `qwen3.5:0.8b` (~1.3 GB); on a fast one try `qwen3.5:4b` (better
+  corrections). Change only `OLLAMA_MODEL`.
+
+### Setup (Windows)
+1. Install Ollama: https://ollama.com/download (or `winget install Ollama.Ollama`). It runs in the
+   background on `http://localhost:11434`.
+2. `ollama pull qwen3.5:2b`
+3. Check it: `ollama run qwen3.5:2b "Correct: I have went to the standup yesterday."`
+4. In `server/.env`: `OLLAMA_URL=http://localhost:11434` (keep `OLLAMA_MODEL`, `OLLAMA_TIMEOUT_MS`).
+5. Restart the server. Answer a scenario in the app: "Corrections" and "Improved answer" appear.
+   The server log says `Using rule-based feedback: …` whenever it fell back.
+6. If it falls back with "no answer in 12000 ms", use `qwen3.5:0.8b`. The first answer after a
+   start can be slow while the model loads.
+
+### Tests
+- `buildFeedbackMessages` (every variable filled, Azure scores listed, `$` in transcripts kept).
+- `OllamaFeedbackProvider` with a fake HTTP client: valid answer merged, request shape (prompt,
+  schema, no thinking), rule-based fields protected, fallback on invalid JSON / wrong shape /
+  unknown correction type / odd body / Ollama off / timeout (aborted), empty answer skips the model.
+- `FeedbackService` stores the provider that answered; env schema (defaults, URL, timeout limit).
+- `yarn --cwd server test` 138/138, typecheck, oxlint and prettier clean.
+
+### Known issues / pending
+- **Not run against a real Ollama:** it is not installed on this machine. Checked live instead:
+  with `OLLAMA_URL` pointing at nothing, `POST /feedback` answered in 0.4 s with rule-based
+  feedback and stored `provider = rules`.
+- The quality of corrections from a 2B model is unknown until tried; switch models via `.env`.
+- Noticed (not changed): the rules score a 14-word, 8-second answer 0 with "I heard almost
+  nothing". The short-answer threshold may be too strict.
+
+### Next
+- Part 3: cloud sync to my own server.

@@ -19,7 +19,7 @@ export type FeedbackRequest = {
   pronunciation?: ScoredWord[];
 };
 
-/** Look up the deck → ask the provider → keep the answer and its feedback. */
+/** Look up the deck → ask the provider → keep the answer, its feedback and who answered. */
 @Injectable()
 export class FeedbackService {
   constructor(
@@ -31,13 +31,12 @@ export class FeedbackService {
   async review(request: FeedbackRequest): Promise<ScenarioFeedback> {
     const deck = this.decks.get(request.deckId);
     if (!deck) throw new NotFoundException(`Unknown deck "${request.deckId}"`);
-    const feedback = await this.provider.review({ ...request, deck });
-    const { pronunciation: _scores, ...answer } = request;
-    await this.store.save({
-      ...answer,
-      provider: this.provider.name,
-      feedback,
+    const { feedback, provider } = await this.provider.review({
+      ...request,
+      deck,
     });
+    const { pronunciation: _scores, ...answer } = request;
+    await this.store.save({ ...answer, provider, feedback });
     return feedback;
   }
 }

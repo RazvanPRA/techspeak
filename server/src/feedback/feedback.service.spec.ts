@@ -31,6 +31,23 @@ describe('FeedbackService', () => {
     expect(store.saved).toEqual([{ ...request, provider: 'rules', feedback }]);
   });
 
+  it('stores the provider that actually answered (e.g. the rules after a fallback)', async () => {
+    const store = new InMemoryScenarioAnswerStore();
+    const rules = new RuleBasedFeedbackProvider();
+    const fellBack = {
+      name: 'ollama:qwen3.5:2b',
+      review: (input: Parameters<typeof rules.review>[0]) =>
+        rules.review(input),
+    };
+    const service = new FeedbackService(
+      new DeckCatalog([testDeck]),
+      fellBack,
+      store,
+    );
+    await service.review(request);
+    expect(store.saved[0]?.provider).toBe('rules');
+  });
+
   it('does not store the raw pronunciation scores with the answer', async () => {
     const { service, store } = setup();
     await service.review({

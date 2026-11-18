@@ -17,7 +17,11 @@ import {
 } from '../rules/pronunciation-tips.js';
 import { scoreAnswer } from '../rules/score-answer.js';
 import { wordsPerMinute } from '../rules/words-per-minute.js';
-import type { FeedbackInput, FeedbackProvider } from './feedback-provider.js';
+import type {
+  FeedbackInput,
+  FeedbackProvider,
+  FeedbackReview,
+} from './feedback-provider.js';
 
 const average = (scores: readonly ScoredWord[] | undefined): number | null =>
   scores && scores.length > 0
@@ -44,7 +48,11 @@ function measure(input: FeedbackInput, termsUsed: string[]): AnswerMetrics {
 export class RuleBasedFeedbackProvider implements FeedbackProvider {
   readonly name = 'rules';
 
-  async review(input: FeedbackInput): Promise<ScenarioFeedback> {
+  async review(input: FeedbackInput): Promise<FeedbackReview> {
+    return { feedback: this.build(input), provider: this.name };
+  }
+
+  private build(input: FeedbackInput): ScenarioFeedback {
     const { deck, prompt, transcript, pronunciation } = input;
     const vocabulary = matchDeckTerms(deck, transcript, prompt);
     const m = measure(input, vocabulary.used);

@@ -18,7 +18,7 @@ describe('RuleBasedFeedbackProvider', () => {
   };
 
   it('returns valid Part B feedback with the LLM-only fields empty', async () => {
-    const feedback = await provider.review(input);
+    const { feedback } = await provider.review(input);
     expect(ScenarioFeedbackSchema.parse(feedback)).toEqual(feedback);
     expect(feedback.corrections).toEqual([]);
     expect(feedback.improvedAnswer).toBe('');
@@ -26,7 +26,7 @@ describe('RuleBasedFeedbackProvider', () => {
   });
 
   it('measures fluency and vocabulary', async () => {
-    const feedback = await provider.review(input);
+    const { feedback } = await provider.review(input);
     expect(feedback.fluency).toMatchObject({
       fillerCount: 3,
       fillers: ['so', 'um', 'basically'],
@@ -47,7 +47,7 @@ describe('RuleBasedFeedbackProvider', () => {
   });
 
   it('uses Azure scores for pronunciation tips when they are sent', async () => {
-    const feedback = await provider.review({
+    const { feedback } = await provider.review({
       ...input,
       pronunciation: [
         { word: 'query', accuracy: 40 },
@@ -60,7 +60,7 @@ describe('RuleBasedFeedbackProvider', () => {
   });
 
   it('scores an empty answer 0 and says what to try next time', async () => {
-    const feedback = await provider.review({
+    const { feedback } = await provider.review({
       ...input,
       transcript: '',
       durationSeconds: 3,
