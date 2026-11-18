@@ -1,0 +1,33 @@
+buildscript {
+    ext {
+        buildToolsVersion = "37.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 37
+        targetSdkVersion = 36
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.2.0"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
+
+// Windows MAX_PATH (260): react-native-audio-api's CMake object paths exceed the limit
+// in release (RelWithDebInfo) builds when staged under node_modules/.../android/.cxx.
+// Stage its native build under android/build/cxa instead (~30 chars shorter).
+subprojects {
+    if (name == "react-native-audio-api") {
+        plugins.withId("com.android.library") {
+            android.externalNativeBuild.cmake.buildStagingDirectory =
+                rootProject.file("build/cxa")
+        }
+    }
+}

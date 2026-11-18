@@ -1,0 +1,172 @@
+{
+  "id": "db-advanced",
+  "title": "what else matters around databases",
+  "terms": [
+    {
+      "term": "Redis",
+      "ipa": "/ˈrɛdɪs/",
+      "spelled": false,
+      "hint": "\"RED-iss\"",
+      "meaning": "in-memory store",
+      "example": null
+    },
+    {
+      "term": "cache invalidation",
+      "ipa": "/kæʃ ɪnˌvælɪˈdeɪʃən/",
+      "spelled": false,
+      "hint": "cache = \"cash\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "Elasticsearch",
+      "ipa": "/ɪˈlæstɪksɜːrtʃ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "full-text search engine",
+      "example": null
+    },
+    {
+      "term": "replication",
+      "ipa": "/ˌrɛplɪˈkeɪʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "partitioning",
+      "ipa": "/pɑːrˈtɪʃənɪŋ/",
+      "spelled": false,
+      "hint": "stress on 2nd",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "CAP theorem",
+      "ipa": "/kæp ˈθɪərəm/",
+      "spelled": false,
+      "hint": "/θ/ in theorem!",
+      "meaning": "consistency, availability, partition tolerance",
+      "example": null
+    },
+    {
+      "term": "latency",
+      "ipa": "/ˈleɪtənsi/",
+      "spelled": false,
+      "hint": "\"LAY-ten-see\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "throughput",
+      "ipa": "/ˈθruːpʊt/",
+      "spelled": false,
+      "hint": "/θ/!",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "connection pool",
+      "ipa": "/kəˈnɛkʃən puːl/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "EXPLAIN ANALYZE",
+      "ipa": "/ɪkˈspleɪn ˈænəlaɪz/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "query plan with real timings",
+      "example": null
+    },
+    {
+      "term": "query planner",
+      "ipa": "/ˈkwɪri ˈplænər/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "write-ahead log (WAL)",
+      "ipa": "/raɪt əˈhɛd lɔːɡ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "durability mechanism",
+      "example": null
+    },
+    {
+      "term": "optimistic locking",
+      "ipa": "/ˌɑːptɪˈmɪstɪk ˈlɑːkɪŋ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "version check on update",
+      "example": null
+    },
+    {
+      "term": "pessimistic locking",
+      "ipa": "/ˌpɛsɪˈmɪstɪk ˈlɑːkɪŋ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "lock rows up front",
+      "example": null
+    },
+    {
+      "term": "vector database / pgvector",
+      "ipa": "\"P-G vector\"",
+      "spelled": false,
+      "hint": null,
+      "meaning": "similarity search on embeddings",
+      "example": null
+    },
+    {
+      "term": "embedding",
+      "ipa": "/ɪmˈbɛdɪŋ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "numeric vector of text",
+      "example": null
+    },
+    {
+      "term": "DynamoDB",
+      "ipa": "/daɪˈnæmoʊ ˌdiː ˈbiː/",
+      "spelled": false,
+      "hint": "\"dye-NAM-oh\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "OLTP / OLAP",
+      "ipa": "letters / /ˈoʊlæp/",
+      "spelled": false,
+      "hint": "OLAP often said \"OH-lap\"",
+      "meaning": "transactional vs analytical",
+      "example": null
+    },
+    {
+      "term": "ETL",
+      "ipa": null,
+      "spelled": true,
+      "hint": null,
+      "meaning": "extract, transform, load",
+      "example": null
+    },
+    {
+      "term": "backup / point-in-time recovery",
+      "ipa": "/rɪˈkʌvəri/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    }
+  ],
+  "sentences": [
+    "Every write invalidates the cache entry, so readers never see stale data.",
+    "EXPLAIN ANALYZE shows a sequential scan instead of an index scan.",
+    "We use optimistic locking, so a conflicting update fails instead of blocking.",
+    "The connection pool is exhausted because transactions stay open for too long."
+  ]
+}

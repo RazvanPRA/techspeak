@@ -1,0 +1,109 @@
+[
+  {
+    "topic": "React / RN",
+    "deckId": "react-rn",
+    "prompts": [
+      "How does reconciliation work?",
+      "When would you use useMemo and useCallback, and when are they useless?",
+      "What changed with the React Native New Architecture?"
+    ]
+  },
+  {
+    "topic": "Angular",
+    "deckId": "angular",
+    "prompts": [
+      "Explain change detection and how signals change it.",
+      "Observables vs promises."
+    ]
+  },
+  {
+    "topic": "JavaScript",
+    "deckId": "javascript",
+    "prompts": [
+      "Explain the event loop.",
+      "What is a closure, with a real use case?"
+    ]
+  },
+  {
+    "topic": "TypeScript",
+    "deckId": "typescript",
+    "prompts": [
+      "Generics vs any vs unknown.",
+      "How do discriminated unions help with state modelling?"
+    ]
+  },
+  {
+    "topic": "Next.js",
+    "deckId": "nextjs",
+    "prompts": [
+      "SSR vs SSG vs ISR and when to use each.",
+      "What are server components and what problem do they solve?"
+    ]
+  },
+  {
+    "topic": "NestJS",
+    "deckId": "nestjs",
+    "prompts": [
+      "How does dependency injection work in NestJS?",
+      "Guards vs interceptors vs pipes."
+    ]
+  },
+  {
+    "topic": "SQL",
+    "deckId": "sql",
+    "prompts": [
+      "Explain ACID and isolation levels.",
+      "How would you investigate a slow query?"
+    ]
+  },
+  {
+    "topic": "NoSQL / MongoDB",
+    "deckId": "nosql-mongodb",
+    "prompts": [
+      "When would you choose MongoDB over PostgreSQL?",
+      "Embedding vs referencing."
+    ]
+  },
+  {
+    "topic": "APIs / Swagger / Postman",
+    "deckId": "api-swagger-postman",
+    "prompts": [
+      "Design a REST API for orders and how you'd document it.",
+      "Authentication vs authorization.",
+      "How do you make a POST endpoint idempotent?"
+    ]
+  },
+  {
+    "topic": "Prisma / ORMs",
+    "deckId": "prisma-orm",
+    "prompts": [
+      "Prisma vs TypeORM vs raw SQL.",
+      "What is the N+1 problem and how do you fix it?"
+    ]
+  },
+  {
+    "topic": "Go",
+    "deckId": "go",
+    "prompts": [
+      "Goroutines vs OS threads.",
+      "How do channels and mutexes differ?"
+    ]
+  },
+  {
+    "topic": "Databases (advanced)",
+    "deckId": "db-advanced",
+    "prompts": [
+      "Explain the CAP theorem with an example.",
+      "Replication vs sharding.",
+      "How would you design caching with Redis, and how do you invalidate it?"
+    ]
+  },
+  {
+    "topic": "Behavioural",
+    "deckId": "meetings-phrasal-verbs",
+    "prompts": [
+      "Describe a production incident you handled.",
+      "Tell me about a technical decision you pushed back on."
+    ]
+  }
+]

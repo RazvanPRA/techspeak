@@ -1,0 +1,92 @@
+{
+  "id": "nextjs",
+  "title": "Next.js",
+  "terms": [
+    {
+      "term": "Next.js",
+      "ipa": "\"next-J-S\"",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "SSR / SSG / ISR",
+      "ipa": "letters",
+      "spelled": false,
+      "hint": "spell them",
+      "meaning": "server / static / incremental rendering",
+      "example": null
+    },
+    {
+      "term": "server components",
+      "ipa": "/ˈsɜːrvər kəmˈpoʊnənts/",
+      "spelled": false,
+      "hint": "com-PO-nent",
+      "meaning": "render on server only",
+      "example": null
+    },
+    {
+      "term": "middleware",
+      "ipa": "/ˈmɪdəlwɛr/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "code before the request completes",
+      "example": null
+    },
+    {
+      "term": "route",
+      "ipa": "/ruːt/ or /raʊt/",
+      "spelled": false,
+      "hint": "both are fine",
+      "meaning": "URL path handler",
+      "example": null
+    },
+    {
+      "term": "revalidate",
+      "ipa": "/riˈvælɪdeɪt/",
+      "spelled": false,
+      "hint": "stress on \"VAL\"",
+      "meaning": "refresh cached data",
+      "example": null
+    },
+    {
+      "term": "prefetch",
+      "ipa": "/ˌpriːˈfɛtʃ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "load before navigation",
+      "example": null
+    },
+    {
+      "term": "streaming",
+      "ipa": "/ˈstriːmɪŋ/",
+      "spelled": false,
+      "hint": "long /iː/",
+      "meaning": "sending HTML in chunks",
+      "example": null
+    },
+    {
+      "term": "edge runtime",
+      "ipa": "/ɛdʒ ˈrʌntaɪm/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "lightweight runtime near the user",
+      "example": null
+    },
+    {
+      "term": "Vercel",
+      "ipa": "/vərˈsɛl/",
+      "spelled": false,
+      "hint": "\"ver-SELL\"",
+      "meaning": "hosting platform",
+      "example": null
+    }
+  ],
+  "sentences": [
+    "This page is statically generated and revalidated every sixty seconds.",
+    "Server components don't ship any JavaScript to the client.",
+    "The middleware checks the session cookie before the route is rendered.",
+    "With streaming, the user sees the layout while the data is still loading."
+  ]
+}

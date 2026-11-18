@@ -1,0 +1,108 @@
+{
+  "id": "typescript",
+  "title": "TypeScript",
+  "terms": [
+    {
+      "term": "generics",
+      "ipa": "/dʒəˈnɛrɪks/",
+      "spelled": false,
+      "hint": "soft g, stress on 2nd",
+      "meaning": "type parameters",
+      "example": null
+    },
+    {
+      "term": "inference",
+      "ipa": "/ˈɪnfərəns/",
+      "spelled": false,
+      "hint": "stress on 1st",
+      "meaning": "type deduced automatically",
+      "example": null
+    },
+    {
+      "term": "narrowing",
+      "ipa": "/ˈnæroʊɪŋ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "refining a type in a branch",
+      "example": null
+    },
+    {
+      "term": "union",
+      "ipa": "/ˈjuːnjən/",
+      "spelled": false,
+      "hint": "\"YOON-yun\"",
+      "meaning": "A or B type",
+      "example": null
+    },
+    {
+      "term": "intersection",
+      "ipa": "/ˌɪntərˈsɛkʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "A and B type",
+      "example": null
+    },
+    {
+      "term": "discriminated union",
+      "ipa": "/dɪˈskrɪmɪneɪtɪd ˈjuːnjən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "union tagged by a literal field",
+      "example": null
+    },
+    {
+      "term": "type guard",
+      "ipa": "/taɪp ɡɑːrd/",
+      "spelled": false,
+      "hint": "silent \"u\" in guard",
+      "meaning": "runtime check that narrows",
+      "example": null
+    },
+    {
+      "term": "tuple",
+      "ipa": "/ˈtuːpəl/",
+      "spelled": false,
+      "hint": "also /ˈtʌpəl/",
+      "meaning": "fixed-length typed array",
+      "example": null
+    },
+    {
+      "term": "enum",
+      "ipa": "/ˈiːnʌm/",
+      "spelled": false,
+      "hint": "also /ˈiːnuːm/",
+      "meaning": "named constants",
+      "example": null
+    },
+    {
+      "term": "declaration file",
+      "ipa": "/ˌdɛkləˈreɪʃən faɪl/",
+      "spelled": false,
+      "hint": null,
+      "meaning": ".d.ts",
+      "example": null
+    },
+    {
+      "term": "utility types",
+      "ipa": "/juːˈtɪləti taɪps/",
+      "spelled": false,
+      "hint": "stress on 2nd",
+      "meaning": "Partial, Pick, Omit…",
+      "example": null
+    },
+    {
+      "term": "strict mode",
+      "ipa": "/strɪkt moʊd/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    }
+  ],
+  "sentences": [
+    "The compiler can't infer the return type here, so we annotate it explicitly.",
+    "A discriminated union lets us narrow the type with a simple switch.",
+    "We use generics so the repository works with any entity.",
+    "Enable strict mode, otherwise null checks are not enforced."
+  ]
+}

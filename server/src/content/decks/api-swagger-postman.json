@@ -1,0 +1,140 @@
+{
+  "id": "api-swagger-postman",
+  "title": "APIs, Swagger / OpenAPI, Postman",
+  "terms": [
+    {
+      "term": "API",
+      "ipa": null,
+      "spelled": true,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "Swagger",
+      "ipa": "/ˈswæɡər/",
+      "spelled": false,
+      "hint": "\"SWAG-er\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "OpenAPI",
+      "ipa": "\"open-A-P-I\"",
+      "spelled": false,
+      "hint": null,
+      "meaning": "spec format",
+      "example": null
+    },
+    {
+      "term": "endpoint",
+      "ipa": "/ˈɛndpɔɪnt/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "header",
+      "ipa": "/ˈhɛdər/",
+      "spelled": false,
+      "hint": "\"HED-er\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "bearer token",
+      "ipa": "/ˈbɛrər ˈtoʊkən/",
+      "spelled": false,
+      "hint": "\"BEAR-er\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "OAuth",
+      "ipa": "/ˈoʊ ɔːθ/",
+      "spelled": false,
+      "hint": "\"OH-auth\", final /θ/",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "authentication",
+      "ipa": "/ɔːˌθɛntɪˈkeɪʃən/",
+      "spelled": false,
+      "hint": "/θ/! who you are",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "authorization",
+      "ipa": "/ˌɔːθərəˈzeɪʃən/",
+      "spelled": false,
+      "hint": "/θ/! what you can do",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "idempotent",
+      "ipa": "/ˌaɪdəmˈpoʊtənt/",
+      "spelled": false,
+      "hint": "\"eye-dem-POH-tent\"",
+      "meaning": "same result if repeated",
+      "example": null
+    },
+    {
+      "term": "pagination",
+      "ipa": "/ˌpædʒɪˈneɪʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "rate limiting",
+      "ipa": "/reɪt ˈlɪmɪtɪŋ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "webhook",
+      "ipa": "/ˈwɛbhʊk/",
+      "spelled": false,
+      "hint": "/w/ not /v/",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "environment",
+      "ipa": "/ɪnˈvaɪrənmənt/",
+      "spelled": false,
+      "hint": "stress on \"VAI\"",
+      "meaning": "Postman env",
+      "example": null
+    },
+    {
+      "term": "collection",
+      "ipa": "/kəˈlɛkʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "Postman request group",
+      "example": null
+    },
+    {
+      "term": "status code",
+      "ipa": "/ˈsteɪtəs koʊd/",
+      "spelled": false,
+      "hint": "\"STAY-tus\"",
+      "meaning": null,
+      "example": null
+    }
+  ],
+  "sentences": [
+    "The endpoint returns four oh one because the bearer token has expired.",
+    "PUT should be idempotent, but this implementation creates a new record every time.",
+    "I generated the Swagger docs from the OpenAPI decorators in the controllers.",
+    "Switch the Postman environment to staging before you run the collection."
+  ]
+}

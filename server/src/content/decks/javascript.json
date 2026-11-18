@@ -1,0 +1,132 @@
+{
+  "id": "javascript",
+  "title": "JavaScript & Node.js",
+  "terms": [
+    {
+      "term": "JavaScript",
+      "ipa": "/ˈdʒɑːvəskrɪpt/",
+      "spelled": false,
+      "hint": "\"JAH-va\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "ECMAScript",
+      "ipa": "/ˈɛkməskrɪpt/",
+      "spelled": false,
+      "hint": "\"ECK-ma\"",
+      "meaning": "the JS standard",
+      "example": null
+    },
+    {
+      "term": "closure",
+      "ipa": "/ˈkloʊʒər/",
+      "spelled": false,
+      "hint": "/ʒ/ like \"measure\"",
+      "meaning": "function + captured scope",
+      "example": null
+    },
+    {
+      "term": "hoisting",
+      "ipa": "/ˈhɔɪstɪŋ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "declarations moved to top",
+      "example": null
+    },
+    {
+      "term": "prototype",
+      "ipa": "/ˈproʊtətaɪp/",
+      "spelled": false,
+      "hint": "\"PRO-to-type\"",
+      "meaning": "inheritance object",
+      "example": null
+    },
+    {
+      "term": "coercion",
+      "ipa": "/koʊˈɜːrʒən/",
+      "spelled": false,
+      "hint": "\"co-ER-zhun\"",
+      "meaning": "implicit type conversion",
+      "example": null
+    },
+    {
+      "term": "asynchronous",
+      "ipa": "/eɪˈsɪŋkrənəs/",
+      "spelled": false,
+      "hint": "stress on 2nd: \"ay-SINK-ro-nus\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "promise",
+      "ipa": "/ˈprɑːmɪs/",
+      "spelled": false,
+      "hint": "\"PROM-iss\", not \"pro-MISE\"",
+      "meaning": "future value",
+      "example": null
+    },
+    {
+      "term": "event loop",
+      "ipa": "/ɪˈvɛnt luːp/",
+      "spelled": false,
+      "hint": "stress on 2nd of \"event\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "undefined",
+      "ipa": "/ˌʌndɪˈfaɪnd/",
+      "spelled": false,
+      "hint": "3 syllables, ends /-faɪnd/",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "null",
+      "ipa": "/nʌl/",
+      "spelled": false,
+      "hint": "like \"dull\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "Node.js",
+      "ipa": "\"node-J-S\"",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "npm",
+      "ipa": null,
+      "spelled": true,
+      "hint": "spell it",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "Vite",
+      "ipa": "/viːt/",
+      "spelled": false,
+      "hint": "\"veet\" (French word)",
+      "meaning": "build tool",
+      "example": null
+    },
+    {
+      "term": "Deno",
+      "ipa": "/ˈdiːnoʊ/",
+      "spelled": false,
+      "hint": "\"DEE-no\"",
+      "meaning": "runtime",
+      "example": null
+    }
+  ],
+  "sentences": [
+    "A closure keeps a reference to the variables from its outer scope.",
+    "The promise is rejected, but nobody handles the error, so it fails silently.",
+    "Asynchronous callbacks run only after the call stack is empty, thanks to the event loop.",
+    "Implicit coercion is why we always use strict equality."
+  ]
+}

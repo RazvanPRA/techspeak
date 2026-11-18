@@ -1,0 +1,49 @@
+// TechSpeak backend schema. Run `npx prisma migrate dev` after a change.
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// One pronunciation assessment (shadowing sentence or minimal-pairs word).
+model Attempt {
+  id                 String   @id @default(uuid())
+  referenceText      String
+  transcript         String
+  pronunciationScore Float
+  accuracyScore      Float
+  fluencyScore       Float
+  prosodyScore       Float?
+  completenessScore  Float
+  /// Per-word and per-phoneme scores, as returned by POST /assessment.
+  words              Json
+  createdAt          DateTime @default(now())
+}
+
+/// One spoken answer to a scenario prompt.
+model ScenarioAnswer {
+  id              String    @id @default(uuid())
+  prompt          String
+  deckId          String
+  transcript      String
+  durationSeconds Float
+  createdAt       DateTime  @default(now())
+  feedback        Feedback?
+}
+
+/// The validated feedback for a scenario answer (FeedbackSchema JSON).
+model Feedback {
+  id           String         @id @default(uuid())
+  answerId     String         @unique
+  answer       ScenarioAnswer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  /// Which FeedbackProvider produced it, e.g. "rules".
+  provider     String
+  overallScore Int
+  body         Json
+  createdAt    DateTime       @default(now())
+}

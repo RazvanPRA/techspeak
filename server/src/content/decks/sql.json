@@ -1,0 +1,164 @@
+{
+  "id": "sql",
+  "title": "SQL & relational databases",
+  "terms": [
+    {
+      "term": "SQL",
+      "ipa": "/ˈsiːkwəl/ or S-Q-L",
+      "spelled": false,
+      "hint": "both accepted",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "PostgreSQL",
+      "ipa": "/ˈpoʊstɡrɛs ˌkjuː ˈɛl/",
+      "spelled": false,
+      "hint": "\"POST-gres\", often just \"Postgres\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "MySQL",
+      "ipa": "\"my-S-Q-L\"",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "query",
+      "ipa": "/ˈkwɪri/",
+      "spelled": false,
+      "hint": "\"KWEE-ree\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "column",
+      "ipa": "/ˈkɑːləm/",
+      "spelled": false,
+      "hint": "silent \"n\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "row",
+      "ipa": "/roʊ/",
+      "spelled": false,
+      "hint": "like \"go\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "schema",
+      "ipa": "/ˈskiːmə/",
+      "spelled": false,
+      "hint": "\"SKEE-ma\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "index / indexes / indices",
+      "ipa": "/ˈɪndɛks/, /ˈɪndɪsiːz/",
+      "spelled": false,
+      "hint": "both plurals OK",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "primary key",
+      "ipa": "/ˈpraɪmɛri kiː/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "foreign key",
+      "ipa": "/ˈfɔːrən kiː/",
+      "spelled": false,
+      "hint": "silent \"g\": \"FOR-in\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "constraint",
+      "ipa": "/kənˈstreɪnt/",
+      "spelled": false,
+      "hint": "stress on 2nd",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "join",
+      "ipa": "/dʒɔɪn/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "transaction",
+      "ipa": "/trænˈzækʃən/",
+      "spelled": false,
+      "hint": "/z/ sound",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "ACID",
+      "ipa": "/ˈæsɪd/",
+      "spelled": false,
+      "hint": "said as the word \"acid\"",
+      "meaning": "atomicity, consistency, isolation, durability",
+      "example": null
+    },
+    {
+      "term": "isolation level",
+      "ipa": "/ˌaɪsəˈleɪʃən ˈlɛvəl/",
+      "spelled": false,
+      "hint": "\"eye-so-LAY-shun\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "deadlock",
+      "ipa": "/ˈdɛdlɑːk/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "normalization",
+      "ipa": "/ˌnɔːrmələˈzeɪʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "aggregate",
+      "ipa": "n. /ˈæɡrɪɡət/, v. /ˈæɡrɪɡeɪt/",
+      "spelled": false,
+      "hint": "noun vs verb differ",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "CTE",
+      "ipa": null,
+      "spelled": true,
+      "hint": "\"common table expression\"",
+      "meaning": null,
+      "example": null
+    }
+  ],
+  "sentences": [
+    "The query is slow because there's no index on the foreign key column.",
+    "We wrap both updates in a transaction, so either both succeed or neither does.",
+    "Under repeatable read, the second transaction still sees the old row.",
+    "A composite index only helps if the query filters on its leading column."
+  ]
+}

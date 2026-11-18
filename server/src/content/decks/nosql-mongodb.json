@@ -1,0 +1,116 @@
+{
+  "id": "nosql-mongodb",
+  "title": "NoSQL & MongoDB",
+  "terms": [
+    {
+      "term": "NoSQL",
+      "ipa": "\"no-sequel\" / \"no-S-Q-L\"",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "MongoDB",
+      "ipa": "/ˈmɑːŋɡoʊ ˌdiː ˈbiː/",
+      "spelled": false,
+      "hint": "\"MONG-go\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "Mongoose",
+      "ipa": "/ˈmɑːŋɡuːs/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "ODM for Node",
+      "example": null
+    },
+    {
+      "term": "document",
+      "ipa": "/ˈdɑːkjəmənt/",
+      "spelled": false,
+      "hint": "\"DOK-yu-ment\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "collection",
+      "ipa": "/kəˈlɛkʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "BSON",
+      "ipa": "/ˈbiːsən/",
+      "spelled": false,
+      "hint": "\"BEE-son\"",
+      "meaning": "binary JSON",
+      "example": null
+    },
+    {
+      "term": "aggregation pipeline",
+      "ipa": "/ˌæɡrɪˈɡeɪʃən ˈpaɪplaɪn/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "multi-stage query",
+      "example": null
+    },
+    {
+      "term": "replica set",
+      "ipa": "/ˈrɛplɪkə sɛt/",
+      "spelled": false,
+      "hint": "\"REP-li-ka\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "shard / sharding",
+      "ipa": "/ʃɑːrd/",
+      "spelled": false,
+      "hint": "/ʃ/ not /s/",
+      "meaning": "horizontal split",
+      "example": null
+    },
+    {
+      "term": "embedded vs referenced",
+      "ipa": "/ɪmˈbɛdɪd/ /ˈrɛfərənst/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "data modelling choice",
+      "example": null
+    },
+    {
+      "term": "denormalization",
+      "ipa": "/diːˌnɔːrmələˈzeɪʃən/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "eventual consistency",
+      "ipa": "/ɪˈvɛntʃuəl kənˈsɪstənsi/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "TTL index",
+      "ipa": null,
+      "spelled": true,
+      "hint": "\"time to live\"",
+      "meaning": "auto-expiring docs",
+      "example": null
+    }
+  ],
+  "sentences": [
+    "We embed the address in the user document because it's always read together.",
+    "The aggregation pipeline groups orders by customer and sorts them by total.",
+    "Reads from a secondary in the replica set are only eventually consistent.",
+    "We chose the shard key carefully to avoid hot spots."
+  ]
+}

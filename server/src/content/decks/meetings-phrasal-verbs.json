@@ -1,0 +1,134 @@
+{
+  "id": "meetings-phrasal-verbs",
+  "title": "standups, reviews, incidents",
+  "terms": [
+    {
+      "term": "roll back",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "We rolled back the release after the error rate spiked."
+    },
+    {
+      "term": "spin up / tear down",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "Spin up a staging environment, then tear it down after the test."
+    },
+    {
+      "term": "look into",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "I'll look into the flaky test today."
+    },
+    {
+      "term": "figure out",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "We still need to figure out the root cause."
+    },
+    {
+      "term": "follow up",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "I'll follow up with the backend team."
+    },
+    {
+      "term": "push back",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "I'd push back on that deadline, it's not realistic."
+    },
+    {
+      "term": "sign off",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "Can you sign off on the migration plan?"
+    },
+    {
+      "term": "blocker",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "No blockers on my side."
+    },
+    {
+      "term": "heads-up",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "Quick heads-up: the API will be down tonight."
+    },
+    {
+      "term": "trade-off",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "The trade-off is higher latency for stronger consistency."
+    },
+    {
+      "term": "edge case",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "This breaks on an edge case with empty arrays."
+    },
+    {
+      "term": "sanity check",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "Can you give my PR a quick sanity check?"
+    },
+    {
+      "term": "deep dive",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "Let's do a deep dive on the outage tomorrow."
+    },
+    {
+      "term": "bandwidth",
+      "ipa": null,
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": "I don't have the bandwidth for this sprint."
+    }
+  ],
+  "sentences": [
+    "We rolled back the release after the error rate spiked.",
+    "Spin up a staging environment, then tear it down after the test.",
+    "I'll look into the flaky test today.",
+    "We still need to figure out the root cause.",
+    "I'll follow up with the backend team.",
+    "I'd push back on that deadline, it's not realistic.",
+    "Can you sign off on the migration plan?",
+    "No blockers on my side.",
+    "Quick heads-up: the API will be down tonight.",
+    "The trade-off is higher latency for stronger consistency.",
+    "This breaks on an edge case with empty arrays.",
+    "Can you give my PR a quick sanity check?",
+    "Let's do a deep dive on the outage tomorrow.",
+    "I don't have the bandwidth for this sprint."
+  ]
+}

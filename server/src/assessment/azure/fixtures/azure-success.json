@@ -1,0 +1,61 @@
+{
+  "RecognitionStatus": "Success",
+  "Offset": 400000,
+  "Duration": 21000000,
+  "DisplayText": "Sink about the cache.",
+  "NBest": [
+    {
+      "Confidence": 0.91,
+      "Lexical": "sink about the cache",
+      "ITN": "sink about the cache",
+      "MaskedITN": "sink about the cache",
+      "Display": "Sink about the cache.",
+      "AccuracyScore": 71.5,
+      "FluencyScore": 88,
+      "CompletenessScore": 100,
+      "PronScore": 78.2,
+      "ProsodyScore": 80.4,
+      "Words": [
+        {
+          "Word": "think",
+          "Offset": 500000,
+          "Duration": 2700000,
+          "AccuracyScore": 38,
+          "ErrorType": "Mispronunciation",
+          "Phonemes": [
+            { "Phoneme": "θ", "AccuracyScore": 5 },
+            { "Phoneme": "ɪ", "AccuracyScore": 90 },
+            { "Phoneme": "ŋ", "AccuracyScore": 70 },
+            { "Phoneme": "k", "AccuracyScore": 95 }
+          ]
+        },
+        {
+          "Word": "about",
+          "AccuracyScore": 96,
+          "ErrorType": "None",
+          "Phonemes": [{ "Phoneme": "ə", "AccuracyScore": 96 }]
+        },
+        {
+          "Word": "the",
+          "ErrorType": "Omission",
+          "AccuracyScore": 0,
+          "Phonemes": []
+        },
+        {
+          "Word": "uh",
+          "ErrorType": "Insertion",
+          "AccuracyScore": 0
+        },
+        {
+          "Word": "cache",
+          "PronunciationAssessment": { "AccuracyScore": 92, "ErrorType": "None" },
+          "Phonemes": [
+            { "Phoneme": "k", "PronunciationAssessment": { "AccuracyScore": 99 } },
+            { "Phoneme": "æ", "PronunciationAssessment": { "AccuracyScore": 85 } },
+            { "Phoneme": "ʃ", "PronunciationAssessment": { "AccuracyScore": 93 } }
+          ]
+        }
+      ]
+    }
+  ]
+}

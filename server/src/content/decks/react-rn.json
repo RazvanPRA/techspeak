@@ -1,0 +1,140 @@
+{
+  "id": "react-rn",
+  "title": "React & React Native",
+  "terms": [
+    {
+      "term": "JSX",
+      "ipa": null,
+      "spelled": true,
+      "hint": "spell it",
+      "meaning": "JS syntax extension for markup",
+      "example": null
+    },
+    {
+      "term": "render",
+      "ipa": "/ˈrɛndər/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "produce UI output",
+      "example": null
+    },
+    {
+      "term": "reconciliation",
+      "ipa": "/ˌrɛkənˌsɪliˈeɪʃən/",
+      "spelled": false,
+      "hint": "6 syllables, stress on \"-AY-\"",
+      "meaning": "diffing the virtual tree",
+      "example": null
+    },
+    {
+      "term": "memoization",
+      "ipa": "/ˌmɛmoʊaɪˈzeɪʃən/",
+      "spelled": false,
+      "hint": "\"memo-\", not \"memori-\"",
+      "meaning": "caching a computed result",
+      "example": null
+    },
+    {
+      "term": "hydration",
+      "ipa": "/haɪˈdreɪʃən/",
+      "spelled": false,
+      "hint": "\"high-DRAY-shun\"",
+      "meaning": "attaching JS to server HTML",
+      "example": null
+    },
+    {
+      "term": "concurrent",
+      "ipa": "/kənˈkɜːrənt/",
+      "spelled": false,
+      "hint": "stress on 2nd syllable",
+      "meaning": "interruptible rendering",
+      "example": null
+    },
+    {
+      "term": "Suspense",
+      "ipa": "/səˈspɛns/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "waiting boundary for async UI",
+      "example": null
+    },
+    {
+      "term": "native",
+      "ipa": "/ˈneɪtɪv/",
+      "spelled": false,
+      "hint": "\"NAY-tiv\", not \"na-TEEV\"",
+      "meaning": "platform code",
+      "example": null
+    },
+    {
+      "term": "Hermes",
+      "ipa": "/ˈhɜːrmiːz/",
+      "spelled": false,
+      "hint": "\"HER-meez\"",
+      "meaning": "RN's JS engine",
+      "example": null
+    },
+    {
+      "term": "Fabric",
+      "ipa": "/ˈfæbrɪk/",
+      "spelled": false,
+      "hint": "short /æ/",
+      "meaning": "new RN renderer",
+      "example": null
+    },
+    {
+      "term": "TurboModule",
+      "ipa": "/ˈtɜːrboʊ ˌmɑːdʒuːl/",
+      "spelled": false,
+      "hint": "\"MOD-jool\"",
+      "meaning": "new native module system",
+      "example": null
+    },
+    {
+      "term": "Metro",
+      "ipa": "/ˈmɛtroʊ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "RN bundler",
+      "example": null
+    },
+    {
+      "term": "bundle",
+      "ipa": "/ˈbʌndəl/",
+      "spelled": false,
+      "hint": "/ʌ/ like \"bun\"",
+      "meaning": "packaged JS output",
+      "example": null
+    },
+    {
+      "term": "gesture",
+      "ipa": "/ˈdʒɛstʃər/",
+      "spelled": false,
+      "hint": "soft g",
+      "meaning": "touch interaction",
+      "example": null
+    },
+    {
+      "term": "Reanimated",
+      "ipa": "/riˈænɪmeɪtɪd/",
+      "spelled": false,
+      "hint": "\"-ted\" = /ɪd/",
+      "meaning": "UI-thread animations library",
+      "example": null
+    },
+    {
+      "term": "prop drilling",
+      "ipa": "/prɑːp ˈdrɪlɪŋ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "passing props through many levels",
+      "example": null
+    }
+  ],
+  "sentences": [
+    "This component re-renders on every keystroke, so let's memoize the callback.",
+    "Reconciliation compares the new tree with the previous one and updates only what changed.",
+    "With the New Architecture, TurboModules talk to native code without the old bridge.",
+    "Hermes reduces the startup time and the memory footprint of the app."
+  ]
+}

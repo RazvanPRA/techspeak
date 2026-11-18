@@ -1,0 +1,124 @@
+{
+  "id": "go",
+  "title": "Go (Golang)",
+  "terms": [
+    {
+      "term": "Golang",
+      "ipa": "/ˈɡoʊlæŋ/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "goroutine",
+      "ipa": "/ˈɡoʊruːtiːn/",
+      "spelled": false,
+      "hint": "\"GO-roo-teen\"",
+      "meaning": "lightweight thread",
+      "example": null
+    },
+    {
+      "term": "channel",
+      "ipa": "/ˈtʃænəl/",
+      "spelled": false,
+      "hint": "/tʃ/",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "concurrency",
+      "ipa": "/kənˈkɜːrənsi/",
+      "spelled": false,
+      "hint": "stress on 2nd",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "mutex",
+      "ipa": "/ˈmjuːtɛks/",
+      "spelled": false,
+      "hint": "\"MYOO-tex\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "struct",
+      "ipa": "/strʌkt/",
+      "spelled": false,
+      "hint": "/ʌ/ like \"cup\"",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "interface",
+      "ipa": "/ˈɪntərfeɪs/",
+      "spelled": false,
+      "hint": "stress on 1st",
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "pointer",
+      "ipa": "/ˈpɔɪntər/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "receiver",
+      "ipa": "/rɪˈsiːvər/",
+      "spelled": false,
+      "hint": null,
+      "meaning": "method owner",
+      "example": null
+    },
+    {
+      "term": "defer",
+      "ipa": "/dɪˈfɜːr/",
+      "spelled": false,
+      "hint": "stress on 2nd",
+      "meaning": "run at function exit",
+      "example": null
+    },
+    {
+      "term": "nil",
+      "ipa": "/nɪl/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "slice",
+      "ipa": "/slaɪs/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "panic / recover",
+      "ipa": "/ˈpænɪk/ /rɪˈkʌvər/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    },
+    {
+      "term": "garbage collector",
+      "ipa": "/ˈɡɑːrbɪdʒ kəˈlɛktər/",
+      "spelled": false,
+      "hint": null,
+      "meaning": null,
+      "example": null
+    }
+  ],
+  "sentences": [
+    "Each request is handled in its own goroutine, and results come back through a channel.",
+    "We defer closing the file right after we open it.",
+    "A mutex protects the map, because maps aren't safe for concurrent writes.",
+    "The method has a pointer receiver, so it can modify the struct."
+  ]
+}

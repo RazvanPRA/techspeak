@@ -1,0 +1,223 @@
+[
+  {
+    "id": "think-sink",
+    "sound": "θ-s",
+    "a": {
+      "word": "think",
+      "ipa": "/θɪŋk/"
+    },
+    "b": {
+      "word": "sink",
+      "ipa": "/sɪŋk/"
+    },
+    "tip": "th: tongue tip between the teeth, push air out; s: tongue behind the teeth"
+  },
+  {
+    "id": "thick-sick",
+    "sound": "θ-s",
+    "a": {
+      "word": "thick",
+      "ipa": "/θɪk/"
+    },
+    "b": {
+      "word": "sick",
+      "ipa": "/sɪk/"
+    },
+    "tip": "th: tongue tip between the teeth, push air out; s: tongue behind the teeth"
+  },
+  {
+    "id": "three-tree",
+    "sound": "θ-t",
+    "a": {
+      "word": "three",
+      "ipa": "/θriː/"
+    },
+    "b": {
+      "word": "tree",
+      "ipa": "/triː/"
+    },
+    "tip": "th is a soft stream of air, t is a short stop"
+  },
+  {
+    "id": "thought-taught",
+    "sound": "θ-t",
+    "a": {
+      "word": "thought",
+      "ipa": "/θɔːt/"
+    },
+    "b": {
+      "word": "taught",
+      "ipa": "/tɔːt/"
+    },
+    "tip": "th is a soft stream of air, t is a short stop"
+  },
+  {
+    "id": "they-day",
+    "sound": "ð-d",
+    "a": {
+      "word": "they",
+      "ipa": "/ðeɪ/"
+    },
+    "b": {
+      "word": "day",
+      "ipa": "/deɪ/"
+    },
+    "tip": "voiced th: tongue between the teeth and let it buzz"
+  },
+  {
+    "id": "then-den",
+    "sound": "ð-d",
+    "a": {
+      "word": "then",
+      "ipa": "/ðɛn/"
+    },
+    "b": {
+      "word": "den",
+      "ipa": "/dɛn/"
+    },
+    "tip": "voiced th: tongue between the teeth and let it buzz"
+  },
+  {
+    "id": "west-vest",
+    "sound": "w-v",
+    "a": {
+      "word": "west",
+      "ipa": "/wɛst/"
+    },
+    "b": {
+      "word": "vest",
+      "ipa": "/vɛst/"
+    },
+    "tip": "w: round the lips, teeth stay away; v: top teeth touch the lower lip"
+  },
+  {
+    "id": "wine-vine",
+    "sound": "w-v",
+    "a": {
+      "word": "wine",
+      "ipa": "/waɪn/"
+    },
+    "b": {
+      "word": "vine",
+      "ipa": "/vaɪn/"
+    },
+    "tip": "w: round the lips, teeth stay away; v: top teeth touch the lower lip"
+  },
+  {
+    "id": "wet-vet",
+    "sound": "w-v",
+    "a": {
+      "word": "wet",
+      "ipa": "/wɛt/"
+    },
+    "b": {
+      "word": "vet",
+      "ipa": "/vɛt/"
+    },
+    "tip": "w: round the lips, teeth stay away; v: top teeth touch the lower lip"
+  },
+  {
+    "id": "ship-sheep",
+    "sound": "ɪ-iː",
+    "a": {
+      "word": "ship",
+      "ipa": "/ʃɪp/"
+    },
+    "b": {
+      "word": "sheep",
+      "ipa": "/ʃiːp/"
+    },
+    "tip": "ɪ is short and relaxed; iː is long, with spread lips"
+  },
+  {
+    "id": "live-leave",
+    "sound": "ɪ-iː",
+    "a": {
+      "word": "live",
+      "ipa": "/lɪv/"
+    },
+    "b": {
+      "word": "leave",
+      "ipa": "/liːv/"
+    },
+    "tip": "ɪ is short and relaxed; iː is long, with spread lips"
+  },
+  {
+    "id": "full-fool",
+    "sound": "ʊ-uː",
+    "a": {
+      "word": "full",
+      "ipa": "/fʊl/"
+    },
+    "b": {
+      "word": "fool",
+      "ipa": "/fuːl/"
+    },
+    "tip": "ʊ is short and relaxed; uː is long, with rounded lips"
+  },
+  {
+    "id": "pull-pool",
+    "sound": "ʊ-uː",
+    "a": {
+      "word": "pull",
+      "ipa": "/pʊl/"
+    },
+    "b": {
+      "word": "pool",
+      "ipa": "/puːl/"
+    },
+    "tip": "ʊ is short and relaxed; uː is long, with rounded lips"
+  },
+  {
+    "id": "bad-bed",
+    "sound": "æ-e",
+    "a": {
+      "word": "bad",
+      "ipa": "/bæd/"
+    },
+    "b": {
+      "word": "bed",
+      "ipa": "/bɛd/"
+    },
+    "tip": "æ: drop the jaw and open the mouth wide"
+  },
+  {
+    "id": "man-men",
+    "sound": "æ-e",
+    "a": {
+      "word": "man",
+      "ipa": "/mæn/"
+    },
+    "b": {
+      "word": "men",
+      "ipa": "/mɛn/"
+    },
+    "tip": "æ: drop the jaw and open the mouth wide"
+  },
+  {
+    "id": "walked-wanted",
+    "sound": "t-ɪd",
+    "a": {
+      "word": "walked",
+      "ipa": "/wɔːkt/"
+    },
+    "b": {
+      "word": "wanted",
+      "ipa": "/ˈwɑːntɪd/"
+    },
+    "tip": "-ed is a plain /t/ after k, p, s, sh, ch; an extra /ɪd/ syllable only after t or d"
+  },
+  {
+    "id": "fixed-tested",
+    "sound": "t-ɪd",
+    "a": {
+      "word": "fixed",
+      "ipa": "/fɪkst/"
+    },
+    "b": {
+      "word": "tested",
+      "ipa": "/ˈtɛstɪd/"
+    },
+    "tip": "-ed is a plain /t/ after k, p, s, sh, ch; an extra /ɪd/ syllable only after t or d"
+  }
+]
